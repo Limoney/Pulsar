@@ -1,0 +1,15 @@
+:host
+{
+    /* flex-grow: 1; */
+    width: max(90%,20rem);
+    /* margin: 0 1rem; */
+}
+p-panel
+{
+    width: 100%; 
+    display: block; 
+    overflow-y: scroll;
+    max-height: 50vh;
+    transition: 1s width ease-in-out;
+    /* box-shadow: 0 0 4px 5px #c5c5c5; */
+}

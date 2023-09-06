@@ -1,0 +1,11 @@
+<div class="page-container">
+    <div class="background">
+        <app-background-waves></app-background-waves>
+    </div>
+    <div class="foreground">
+        <app-navbar></app-navbar>
+        <div class="page-content" [@routeAnimations]="outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation']" >
+            <router-outlet #outlet="outlet"></router-outlet>
+        </div>
+    </div>
+</div>

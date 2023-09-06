@@ -1,0 +1,20 @@
+<nav>
+    <div class="nav-logo text-center">
+        <div class="left plr10">
+            <a routerLink="/" class="logo-link">
+                <div class="logo-image">
+                    <img src="/assets/pulsar_logo.svg" alt="Pulsar">
+                </div>
+                <h1>Pulsar</h1>
+            </a>
+        </div>
+        <div class="right plr10">
+            <i class="fa-solid fa-bars" (click)="toggle()"></i>
+        </div>
+    </div>
+    <div class="nav-elements" [ngClass]="{'is-active': navbarOpen}" >
+        <a class="nav-element button-flex" routerLink="/algorithm-list">Browse</a>
+        <a class="nav-element button-flex" routerLink="/credits">Credits</a>
+        <a class="nav-element button-flex">Exit</a>
+    </div>
+</nav>

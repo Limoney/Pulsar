@@ -1,0 +1,24 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <h3 class="text-primary font-semibold text-xl">Available Algorithms</h3>
+    </ng-template>
+    <p-dataView #dv [value]="algorithmList">
+        <ng-template let-algorithm pTemplate="listItem">
+            <div>
+                <a routerLink="{{algorithmsRoute}}" [queryParams]="{name: algorithm.linkName}" class="algorithm">
+                    <div class="icon">
+                        <img *ngIf="algorithm.type == algorithmTypes.Searching" src="/assets/searching_icon.svg" alt="searching icon">
+                        <img *ngIf="algorithm.type == algorithmTypes.Sorting"  src="/assets/sorting_icon.svg" alt="searching icon">
+                    </div>
+                    <div class="content">
+                        <h4>{{algorithm.name}}</h4>
+                        <div class="tags">
+                            <p-tag value="Time Complexity: {{algorithm.timeComplexity}}"></p-tag>
+                            <p-tag *ngIf="algorithm.isInPlace" value="Works in Place"></p-tag>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </ng-template>
+    </p-dataView>
+</p-panel>

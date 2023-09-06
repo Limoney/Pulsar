@@ -1,0 +1,19 @@
+<p-panel>
+    <ng-template pTemplate="header">
+        <h3 class="text-primary font-semibold text-xl">3rd Party Software Used</h3>
+    </ng-template>
+    <p-table [value]="libraries">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Library Name</th>
+                <th>Link</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-library>
+            <tr>
+                <td>{{ library.name }}</td>
+                <td><a href="{{ library.link }}">Link</a></td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
