@@ -3,7 +3,8 @@ export interface AlgorithmDetails {
     linkName: string,
     timeComplexity: AlgorithmComplexity,
     type: AlgorithmType,
-    isInPlace: boolean
+    isInPlace: boolean,
+    sourceCode?: string,
 }
 
 export enum AlgorithmType

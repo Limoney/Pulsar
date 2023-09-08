@@ -15,7 +15,14 @@ import { TableModule } from 'primeng/table';
 import { AlgorithmListComponent } from './components/home-page/algorithm-list/algorithm-list.component';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
-import { AlgorithmsComponent } from './components/algorithms/algorithms.component';
+import { AlgorithmsPageComponent } from './components/algorithms-page/algorithms-page.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { VisualizationPanelComponent } from './components/algorithms-page/visualization-panel/visualization-panel.component';
+import { SortingUiPanelComponent } from './components/algorithms-page/sorting-ui-panel/sorting-ui-panel.component';
+import { SearchingUiPanelComponent } from './components/algorithms-page/searching-ui-panel/searching-ui-panel.component';
+import { SplitterModule } from 'primeng/splitter';
+import { HammerModule, HammerGestureConfig } from '@angular/platform-browser';
+
 
 const appRoutes: Routes = [
 	{
@@ -37,8 +44,8 @@ const appRoutes: Routes = [
 	},
 	{ 
 		path: 'algorithms', 
-		component: AlgorithmsComponent, 
-		data: { animation: "algorithms" }
+		component: AlgorithmsPageComponent, 
+		data: { animation: "algorithms" },
 	}
 ]
 
@@ -50,7 +57,10 @@ const appRoutes: Routes = [
 		BackgroundWavesComponent,
 		CreditsComponent,
 		AlgorithmListComponent,
-		AlgorithmsComponent,
+  		AlgorithmsPageComponent,
+		VisualizationPanelComponent,
+		SortingUiPanelComponent,
+		SearchingUiPanelComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -61,7 +71,10 @@ const appRoutes: Routes = [
 		PanelModule,
 		TableModule,
 		DataViewModule,
-		TagModule
+		TagModule,
+		ProgressSpinnerModule,
+		SplitterModule,
+		HammerModule,
 	],
 	providers: [],
 	bootstrap: [AppComponent]

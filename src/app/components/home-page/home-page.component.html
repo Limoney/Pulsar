@@ -4,7 +4,7 @@
     </div>
     <div class="foreground">
         <app-navbar></app-navbar>
-        <div class="page-content" [@routeAnimations]="outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation']" >
+        <div class="page-content" [@homepageRouteAnimations]="outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation']" >
             <router-outlet #outlet="outlet"></router-outlet>
         </div>
     </div>

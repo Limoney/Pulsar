@@ -32,7 +32,7 @@
               "./src/libs/fontawesome/css/all.min.css"
             ],
             "scripts": [
-              "./src/libs/gsap.min.js"
+              "./src/libs/hammer.min.js"
             ]
           },
           "configurations": {

@@ -1,0 +1,8 @@
+<p-splitter [panelSizes]="[75, 25]" [style]="{ height: '100%' }" (onResizeEnd)="onPanelResizeEnd($event)" (onResizeStart)="onPanelResizeStart($event)">
+    <ng-template pTemplate>
+        <div id="canvas-wrapper" #canvasWrapper></div>
+    </ng-template>
+    <ng-template pTemplate>
+        <div class="col flex align-items-center justify-content-center">Panel 2</div>
+    </ng-template>
+</p-splitter>

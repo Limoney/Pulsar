@@ -1,0 +1,12 @@
+<div class="page-container">
+    <p-progressSpinner *ngIf="loading"></p-progressSpinner>
+    <div class="page-content" *ngIf="!loading && currentAlgorithm">
+        <app-visualization-panel [algorithmDetails]="currentAlgorithm"></app-visualization-panel>
+        <app-searching-ui-panel *ngIf="currentAlgorithm.type ==  algorithmTypes.Searching"></app-searching-ui-panel>
+        <app-sorting-ui-panel *ngIf="currentAlgorithm.type ==  algorithmTypes.Sorting"></app-sorting-ui-panel>
+    </div>
+    <div class="error" *ngIf="!loading && !currentAlgorithm">
+        oops
+    </div>
+</div>
+<!-- https://medium.com/frontend-coach/angular-router-animations-what-they-dont-tell-you-3d2737a7f20b -->
