@@ -16,8 +16,9 @@ export class P5Service {
 		{
 			P5Service.instance = new p5((sketch) => {
 				sketch.setup = () => {
+					console.log("p5 created");
+					
 					this.readySubject.next(true);
-					console.log("new p5");
 				};
 				sketch.draw = () => {
 					// sketch.background(240, 240, 240);

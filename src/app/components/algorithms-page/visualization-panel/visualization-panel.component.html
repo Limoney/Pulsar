@@ -1,8 +1,25 @@
 <p-splitter [panelSizes]="[75, 25]" [style]="{ height: '100%' }" (onResizeEnd)="onPanelResizeEnd($event)" (onResizeStart)="onPanelResizeStart($event)">
     <ng-template pTemplate>
-        <div id="canvas-wrapper" #canvasWrapper></div>
+        <div id="canvas-wrapper" #canvasWrapper>
+            <p-speedDial [model]="canvasActions" 
+                         [radius]="120" 
+                         direction="up-left" 
+                         type="quarter-circle" 
+                         buttonClassName="p-button-help" 
+                         showIcon="pi pi-ellipsis-h" 
+                         hideIcon="pi pi-times">
+            </p-speedDial>
+        </div>
     </ng-template>
     <ng-template pTemplate>
-        <div class="col flex align-items-center justify-content-center">Panel 2</div>
+       
+        <div class="code-window">
+            <h2>{{algorithmDetails.name}}</h2>
+            <pre>
+                <code class="language-javascript" id="algorithmCode" #algorithmCode>
+                    {{algorithmDetails.sourceCode}}
+                </code>
+            </pre>
+        </div>
     </ng-template>
 </p-splitter>

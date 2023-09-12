@@ -7,14 +7,13 @@ export class Bar
     private width: number;
     public fillColor: string;
     public strokeColor: string;
-    private previousFillColor: string
-    private prefiousstrokeColor: string
     public strokeSize: number = 1;
     public position: p5.Vector; //TODO: make me private
     public value: number;
     private sketch: p5;
     static defaultFillColor = "#eeeeee";
     static defaultStrokeColor = "#a9a9a9";
+    static animationDuration = 1;
 
     constructor(x: number,y: number,w: number,v: number)
     {
@@ -25,8 +24,6 @@ export class Bar
         this.value = v;
         this.fillColor = Bar.defaultFillColor;
         this.strokeColor = Bar.defaultStrokeColor;
-        this.previousFillColor = this.fillColor;
-        this.prefiousstrokeColor = this.strokeColor;
     }
 
     update()
@@ -48,31 +45,29 @@ export class Bar
     }
 
     mark(color: string)
-    {
-        this.previousFillColor = this.fillColor;
-        this.prefiousstrokeColor = this.strokeColor;
+    {        
         gsap.to(this,{
             fillColor: color,
             strokeColor: color,
             ease: "power2.inOut",
-            duration: 1
+            duration: Bar.animationDuration
         })
     }
 
     unmark()
     {
         gsap.to(this,{
-            fillColor: this.previousFillColor,
-            strokeColor: this.prefiousstrokeColor,
+            fillColor: Bar.defaultFillColor,
+            strokeColor: Bar.defaultStrokeColor,
             ease: "power2.inOut",
-            duration: 1
+            duration: Bar.animationDuration
         })
     }
 
     fastUnmark()
     {
-        this.fillColor = this.previousFillColor;
-        this.strokeColor = this.prefiousstrokeColor;
+        this.fillColor = Bar.defaultFillColor;
+        this.strokeColor = Bar.defaultStrokeColor;
     }
 
     flash(color:string )
@@ -81,7 +76,7 @@ export class Bar
             fillColor: color,
             strokeColor: color,
             ease: "power2.inOut",
-            duration: 1,
+            duration: Bar.animationDuration,
             repeat: 1,
             yoyo: true
         })

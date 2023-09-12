@@ -18,10 +18,17 @@ import { TagModule } from 'primeng/tag';
 import { AlgorithmsPageComponent } from './components/algorithms-page/algorithms-page.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { VisualizationPanelComponent } from './components/algorithms-page/visualization-panel/visualization-panel.component';
-import { SortingUiPanelComponent } from './components/algorithms-page/sorting-ui-panel/sorting-ui-panel.component';
-import { SearchingUiPanelComponent } from './components/algorithms-page/searching-ui-panel/searching-ui-panel.component';
+import { ControlPanelComponent } from './components/algorithms-page/control-panel/control-panel.component';
 import { SplitterModule } from 'primeng/splitter';
 import { HammerModule, HammerGestureConfig } from '@angular/platform-browser';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DividerModule } from 'primeng/divider';
+import { KnobModule } from 'primeng/knob';
+import { FormsModule } from '@angular/forms';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { StyleClassModule } from 'primeng/styleclass';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { BlockUIModule } from 'primeng/blockui';
 
 
 const appRoutes: Routes = [
@@ -59,8 +66,7 @@ const appRoutes: Routes = [
 		AlgorithmListComponent,
   		AlgorithmsPageComponent,
 		VisualizationPanelComponent,
-		SortingUiPanelComponent,
-		SearchingUiPanelComponent,
+		ControlPanelComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -75,6 +81,14 @@ const appRoutes: Routes = [
 		ProgressSpinnerModule,
 		SplitterModule,
 		HammerModule,
+		InputNumberModule,
+		DividerModule,
+		KnobModule,
+		FormsModule,
+		InputSwitchModule,
+		StyleClassModule,
+		SpeedDialModule,
+		BlockUIModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]

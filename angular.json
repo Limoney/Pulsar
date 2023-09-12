@@ -26,10 +26,12 @@
             ],
             "styles": [
               "src/styles.css",
-              "./node_modules/primeng/resources/themes/soho-dark/theme.css",
               "./node_modules/primeng/resources/primeng.min.css",
               "./node_modules/primeicons/primeicons.css",
-              "./src/libs/fontawesome/css/all.min.css"
+              "./src/libs/fontawesome/css/all.min.css",
+              "./src/assets/theme.css",
+              "./src/libs/prism/prism.css",
+              "./src/libs/prism/prism-one-dark.css"
             ],
             "scripts": [
               "./src/libs/hammer.min.js"

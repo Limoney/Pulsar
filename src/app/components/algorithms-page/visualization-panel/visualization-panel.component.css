@@ -7,3 +7,35 @@
     flex-grow: 1;
     position: relative;
 }
+pre
+{
+    overflow-y: scroll;
+    height: 0px;
+    flex-grow: 1;
+    margin: 0 !important;
+}
+.code-window
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+h2
+{
+    margin: 0;
+    background-color: var(--primary-color);
+    padding: 1rem;
+}
+p-speedDial
+{
+    position: absolute;
+    z-index: 20;
+    bottom: 80px;
+    right: 80px;
+}
+/* p-speedDial ::ng-deep .p-speeddial
+{
+    bottom: 0;
+    right: 0;
+} */

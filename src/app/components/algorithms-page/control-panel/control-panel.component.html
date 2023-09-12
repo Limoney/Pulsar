@@ -1,0 +1,105 @@
+<div class="actions" (wheel)="scrollNavigation($event)">
+
+    <p-blockUI [target]="inputPanel" [blocked]="currentState != visualizationStates.IDLE">
+        <i class="pi pi-lock" style="font-size: 3rem"></i>
+    </p-blockUI>
+    <p-panel class="option-group" #inputPanel>   
+        <ng-template pTemplate="header">
+            <h3>Input</h3>
+        </ng-template>
+        <div class="columns">
+            <div class="column">
+                <span class="p-float-label">
+                    <p-inputNumber inputId="value" [(ngModel)]="inputValue" ></p-inputNumber>
+                    <label for="value">value</label>
+                </span>
+                <span class="p-float-label">
+                    <p-inputNumber inputId="index" [(ngModel)]="inputIndex"></p-inputNumber>
+                    <label for="index">index</label>
+                </span>
+            </div>
+            
+            <div class="column">
+                <button class="button-flex is-primary is-primary-hover" (click)="push()">push</button>
+                <button class="button-flex is-primary is-primary-hover" (click)="pop()">pop</button>
+            </div>
+            <div class="column">
+                <button class="button-flex is-primary is-primary-hover" (click)="insert()">insert</button>
+                <button class="button-flex is-primary is-primary-hover" (click)="remove()">remove</button>
+            </div>
+            <div class="column">
+                <button class="button-flex is-primary is-primary-hover" (click)="clear()">clear</button>
+            </div>
+        </div>
+    </p-panel>
+
+    
+    <p-panel class="option-group">
+        <ng-template pTemplate="header"> 
+            <h3>Vizualization</h3>
+        </ng-template>
+        <div class="columns">
+            <div class="column">
+                <span class="p-float-label">
+                    <p-inputNumber inputId="search" [(ngModel)]="visualizationSearchValue"></p-inputNumber>
+                    <label for="search">search value</label>
+                </span>
+            </div>
+            <div class="column">
+                <button class="button-flex is-primary is-primary-hover" (click)="play()" [disabled]="currentState != visualizationStates.IDLE">Play</button>
+                <button class="button-flex is-primary is-primary-hover" (click)="restart()">Restart</button>
+            </div>
+            <div class="column">
+                <div class="center">
+                    <span>Step by Step</span>
+                    <p-inputSwitch (onChange)="stepByStep()" [(ngModel)]="isStepByStepEnabled"></p-inputSwitch>
+                </div>
+                <button class="button-flex is-primary is-primary-hover" (click)="nextStep()" [disabled]="!isStepByStepEnabled || currentState != visualizationStates.ANIMATING_MANUAL">Next Step</button>
+            </div>
+            <div class="column">
+                <button class="button-flex is-primary is-primary-hover" (click)="pause()" [disabled]="currentState != visualizationStates.ANIMATING_AUTO" title="request stop at next available point in program">Pause</button>
+                <button class="button-flex is-primary is-primary-hover" (click)="resume()" [disabled]="currentState != visualizationStates.ANIMATING_MANUAL">Resume</button>
+            </div>
+            <div class="column">
+                <div class="center animation-speed">
+                    <span>Animation Speed</span>
+                    <p-knob [min]="1" [max]="100" valueTemplate="{value}%" [step]="1" [(ngModel)]="animationSpeed" [size]="80" (onChange)="setSpeed()"></p-knob>
+                </div>
+            </div>
+        </div>
+    </p-panel>
+
+    <p-blockUI [target]="utilityPanel" [blocked]="currentState != visualizationStates.IDLE">
+        <i class="pi pi-lock" style="font-size: 3rem"></i>
+    </p-blockUI>
+    <p-panel class="option-group" #utilityPanel>
+        <ng-template pTemplate="header">
+            <h3>Utility</h3>
+        </ng-template>
+        <div class="columns">
+            <div class="column">
+                <span class="p-float-label">
+                    <p-inputNumber inputId="elementCnt" [(ngModel)]="utilityNumberOfElements"></p-inputNumber>
+                    <label for="elementCnt">Number of Elements</label>
+                </span>
+            </div>
+            <div class="column">
+                <button class="button-flex is-primary is-primary-hover" (click)="sort()">Sort</button>
+                <button class="button-flex is-primary is-primary-hover" (click)="reroll()">Reroll</button>
+            </div>
+        </div>
+    </p-panel>
+</div>
+<div class="navigation">
+    <button class="button is-primary is-primary-hover" (click)="prevPage()">
+        <i class="fa-solid fa-angle-left"></i>
+    </button>
+    <button class="button is-primary is-primary-hover" (click)="nextPage()">
+        <i class="fa-solid fa-angle-right"></i>
+    </button>
+    <button class="button is-primary is-primary-hover" (click)="home()">
+        <i class="fa-solid fa-house"></i>
+    </button>
+</div>
+
+

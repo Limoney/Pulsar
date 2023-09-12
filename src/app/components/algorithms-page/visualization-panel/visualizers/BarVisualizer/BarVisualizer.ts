@@ -10,10 +10,14 @@ export class BarVisualizer
     public barSize;
     protected lock;
     protected stepByStep;
-    protected makeStep;
+    protected shouldMakeNextStep;
     public camera;
-    protected sortedValues;
     private sketchRef: p5;
+    private algorithm: any;
+    private minimumStepDuration = 500;
+    private readonly msBetweenStepsDefault = Bar.animationDuration * 1000 + this.minimumStepDuration;
+    private msBetweenSteps = this.msBetweenStepsDefault;
+    private forceQuit = false;
 
     static resultStatus = {
         NODATA: "No Data",
@@ -21,15 +25,15 @@ export class BarVisualizer
         NOTFOUND: "Value Not Found",
     }
 
-    constructor(initialData: number[], sorted = false)
+    constructor(algorithm: any, initialData: number[])
     {
         this.sketchRef = new P5Service().getP5Instance();
         this.camera = new Camera();
-        this.lock = new SleepLock(2500);
+        this.lock = new SleepLock(this.msBetweenSteps);
+        this.algorithm = algorithm;
         this.stepByStep = false;
-        this.makeStep = false;
+        this.shouldMakeNextStep = false;
         this.barSize = this.sketchRef.width/initialData.length;
-        this.sortedValues = sorted;
         this.sketchRef.textSize(this.barSize/2);
         this.sketchRef.textAlign(this.sketchRef.CENTER);
         this.setData(initialData);
@@ -45,7 +49,7 @@ export class BarVisualizer
         }
     }
 
-    public add(value: number)
+    public push(value: number)
     {
         let prev = this.bars[this.bars.length-1] ?? new Bar(-this.barSize,this.sketchRef.height,this.barSize,0);
         this.bars.push(new Bar(prev.position.x + this.barSize,
@@ -88,36 +92,51 @@ export class BarVisualizer
     
     public restart()
     {
+        this.forceQuit = true;
         for(let bar of this.bars)
         {
             bar.fastUnmark();
         }
     }
 
-    public toggleStepByStep()
+    public enableStepByStep()
     {
-        if(this.stepByStep)
-        {
-            this.stepByStep = false;
-            this.lock.unlock();
-        }
-        else
-        {
-            this.stepByStep = true;
-            this.lock.lock();
-        }
+        this.stepByStep = true;
+        this.lock.lock();
+        console.log("on");
     }
 
-    public markForStep()
+    public disableStepByStep()
     {
-        this.makeStep = true;
+        this.stepByStep = false;
+        this.lock.unlock();
+        console.log("off");
+    }
+
+    public async play(algorithmData: any)
+    {
+        //TODO: fucking params, it cant work like this
+        this.forceQuit = false;
+        return this.algorithm(this,this.bars,algorithmData);
+    }
+
+    public resume()
+    {
+        this.shouldMakeNextStep = true;
         this.lock.unlock();
     }
 
-    public unmarkForStep()
+    public pause()
     {
-        this.makeStep = false;
+        this.shouldMakeNextStep = false;
         this.lock.lock();
+    }
+
+    public setSpeed(speedPercent: number)
+    {
+        this.msBetweenSteps = this.msBetweenStepsDefault *(100 - speedPercent)/100 + this.minimumStepDuration;
+        Bar.animationDuration = this.msBetweenSteps/1000;
+        this.lock.setSleepDuration(this.msBetweenSteps);
     }
 
     public setData(initialData: number[])

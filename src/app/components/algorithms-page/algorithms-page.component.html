@@ -2,8 +2,7 @@
     <p-progressSpinner *ngIf="loading"></p-progressSpinner>
     <div class="page-content" *ngIf="!loading && currentAlgorithm">
         <app-visualization-panel [algorithmDetails]="currentAlgorithm"></app-visualization-panel>
-        <app-searching-ui-panel *ngIf="currentAlgorithm.type ==  algorithmTypes.Searching"></app-searching-ui-panel>
-        <app-sorting-ui-panel *ngIf="currentAlgorithm.type ==  algorithmTypes.Sorting"></app-sorting-ui-panel>
+        <app-control-panel></app-control-panel>
     </div>
     <div class="error" *ngIf="!loading && !currentAlgorithm">
         oops

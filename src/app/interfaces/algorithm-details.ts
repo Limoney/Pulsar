@@ -5,6 +5,7 @@ export interface AlgorithmDetails {
     type: AlgorithmType,
     isInPlace: boolean,
     sourceCode?: string,
+    implementation?: any,
 }
 
 export enum AlgorithmType

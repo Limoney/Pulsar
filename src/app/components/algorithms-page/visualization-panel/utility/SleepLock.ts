@@ -18,6 +18,11 @@ export class SleepLock
         this.isLocked = false;
     }
 
+    public setSleepDuration(durationSeconds: number)
+    {
+        this.sleepDuration = durationSeconds;
+    }
+
     public static sleep(getLock: () => SleepLock ): Promise<void> {
         return new Promise<void>(resolve => {
             if (getLock().isLocked) 
