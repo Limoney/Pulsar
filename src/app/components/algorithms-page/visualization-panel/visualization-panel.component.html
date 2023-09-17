@@ -1,6 +1,14 @@
 <p-splitter [panelSizes]="[75, 25]" [style]="{ height: '100%' }" (onResizeEnd)="onPanelResizeEnd($event)" (onResizeStart)="onPanelResizeStart($event)">
     <ng-template pTemplate>
         <div id="canvas-wrapper" #canvasWrapper>
+            <div class="algorithm-output" #output >
+                <div>
+                    Output: {{ algorithmOutput?.exitMessage ?? "None"}} 
+                </div>
+                <div *ngIf="algorithmOutput?.executiontime">
+                    Execution Time: {{ algorithmOutput?.getFormatedExecutionTime()}}
+                </div>
+            </div>
             <p-speedDial [model]="canvasActions" 
                          [radius]="120" 
                          direction="up-left" 

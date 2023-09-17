@@ -39,3 +39,18 @@ p-speedDial
     bottom: 0;
     right: 0;
 } */
+.algorithm-output
+{
+    padding: 1rem;
+    position: absolute;
+    z-index: 20;
+    background-color: var(--surface-a);
+    width: 100%;
+    display: flex;
+}
+.algorithm-output div:not(:first-child)
+{
+    padding-left: 1rem;
+    margin-left: 1rem;
+    border-left: 3px solid var(--surface-d);
+}

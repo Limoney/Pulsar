@@ -26,6 +26,7 @@ nav
     display: flex;
     gap: 5px;
     align-items: center;
+    color: var(--text-color);
 }
 .nav-element
 {
@@ -33,6 +34,7 @@ nav
     background-color: transparent;
     text-align: left;
     border-radius: 0;
+    color: var(--text-color);
 }
 .nav-element:hover{
     background-color: var(--primary-dark);

@@ -30,6 +30,7 @@ export class Camera
 
     update()
     {
+        // this.sketchRef.ellipse(this.sketchRef.width/2,this.sketchRef.height/2,120);
         this.sketchRef.translate(this.position.x,this.position.y);
         this.sketchRef.scale(this.zoomLevel);
     }
@@ -70,5 +71,14 @@ export class Camera
         this.zoomLevel = 1;
         this.position = this.sketchRef.createVector();
     }
-    
+
+    isOnScreen(centerX: number,centerY: number,w: number, h:number)
+    {
+        return ((centerX + w/2) * this.zoomLevel + this.position.x >= 0 &&
+                (centerX - w/2) * this.zoomLevel + this.position.x <= this.sketchRef.width &&
+
+                (centerY + h/2) * this.zoomLevel + this.position.y >= 0 &&
+                (centerY - h/2) * this.zoomLevel + this.position.y <= this.sketchRef.height)
+    }
+
 }

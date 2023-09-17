@@ -25,6 +25,7 @@ p-panel
     display: flex;
     gap: 0.5rem;
     flex-direction: column;
+    color: var(--text-color);
 }
 .icon
 {

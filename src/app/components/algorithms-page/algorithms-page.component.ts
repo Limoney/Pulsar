@@ -16,7 +16,6 @@ export class AlgorithmsPageComponent implements OnInit {
 
 	protected loading: boolean = true;
 	protected currentAlgorithm?: AlgorithmDetails;
-	protected algorithmTypes: typeof AlgorithmType = AlgorithmType;
 	protected currentAlgorithmIndex: number = 0;
 
 	constructor(private route: ActivatedRoute) { 

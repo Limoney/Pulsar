@@ -1,21 +1,22 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AlgorithmDetails } from 'src/app/interfaces/algorithm-details';
+import { AlgorithmDataOrderType, AlgorithmDetails } from 'src/app/interfaces/algorithm-details';
 import * as p5 from 'p5';
 import { gsap } from 'gsap';
 import { RandomDataGeneratorService } from 'src/app/services/random-data-generator.service';
 import { P5Service } from 'src/app/services/p5.service';
-import { BarVisualizer } from './visualizers/BarVisualizer/BarVisualizer';
 import * as Hammer from 'hammerjs';
 import { Subscription } from 'rxjs';
 import { VisualizationManagerService } from 'src/app/services/visualization-manager.service';
 import { VisualizationContext } from 'src/app/interfaces/visualization-context';
 import { ThemeService } from 'src/app/services/theme.service';
-import { Bar } from './visualizers/BarVisualizer/Bar';
 import { VisualizationAction } from 'src/app/enums/visualization-action';
 import * as Prism from 'prismjs';
 import { MenuItem, MessageService } from 'primeng/api';
 import { SpeedDial } from 'primeng/speeddial';
 import { VisualizationState } from 'src/app/enums/visualization-state';
+import { BarVisualizer } from 'src/app/algorithms/visualizers/BarVisualizer/BarVisualizer';
+import { Bar } from 'src/app/algorithms/visualizers/BarVisualizer/Bar';
+import { AlgorithmOutput } from 'src/app/interfaces/algorithm-output';
 
 
 @Component({
@@ -29,16 +30,25 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	public algorithmDetails!: AlgorithmDetails;
 
 	@ViewChild("canvasWrapper")
-	canvasWrapper!: ElementRef;
+	canvasWrapperElement!: ElementRef;
 
 	@ViewChild("algorithmCode")
-	algorithmCode!: ElementRef;
+	algorithmCodeElement!: ElementRef;
+
+	@ViewChild("output")
+	algorithmOutputElement!: ElementRef;
 
 	protected sketch!: p5
+
 	public canvasRef!: any;
+
 	protected visualizer!: BarVisualizer;
+
 	private p5Subscription!: Subscription;
+
 	protected backgroundColor!: string
+
+	protected algorithmOutput?: AlgorithmOutput;
 
 	canvasActions: MenuItem[] = [];
 
@@ -107,9 +117,7 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 		})
 		
 		// https://techincent.com/code-syntax-highlighter-angular-with-prism-js/
-		Prism.highlightElement(this.algorithmCode.nativeElement,false,()=>{
-			console.log("done");
-		});
+		Prism.highlightElement(this.algorithmCodeElement.nativeElement);
 		
 	}
 
@@ -120,11 +128,11 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	@HostListener('window:resize', ['$event'])
 	onResize(event: any) {
-		this.sketch.resizeCanvas(this.canvasWrapper.nativeElement.clientWidth, this.canvasWrapper.nativeElement.clientHeight);
+		this.sketch.resizeCanvas(this.canvasWrapperElement.nativeElement.clientWidth, this.canvasWrapperElement.nativeElement.clientHeight);
 	}
 
 	onPanelResizeStart(event: any) {
-		gsap.to(this.canvasWrapper.nativeElement,{
+		gsap.to(this.canvasWrapperElement.nativeElement,{
 			opacity: 0,
 			duration: 0.5,
 			ease: "power4.inOut"
@@ -133,7 +141,7 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	}
 
 	onPanelResizeEnd(event: any) {
-		gsap.to(this.canvasWrapper.nativeElement,{
+		gsap.to(this.canvasWrapperElement.nativeElement,{
 			opacity: 1,
 			duration: 0.5,
 			ease: "power4.inOut"
@@ -143,13 +151,15 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	private setupCnavas()
 	{
-		this.canvasRef = this.sketch.createCanvas(this.canvasWrapper.nativeElement.clientWidth,
-												  this.canvasWrapper.nativeElement.clientHeight);
+		this.canvasRef = this.sketch.createCanvas(this.canvasWrapperElement.nativeElement.clientWidth,
+												  this.canvasWrapperElement.nativeElement.clientHeight);
 		this.canvasRef.canvas.style.position = "absolute";
 		this.canvasRef.parent("canvas-wrapper");
 		this.onResize(null);
-		this.visualizer = new BarVisualizer(this.algorithmDetails.implementation,
-											this.dataGeneratorService.getSortedData(20,10,this.sketch.height));
+		const data = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ? 
+					 this.dataGeneratorService.getSortedData(20,10,this.sketch.height) : 
+					 this.dataGeneratorService.getRandomData(20,10,this.sketch.height);
+		this.visualizer = new BarVisualizer(this.algorithmDetails.implementation,data);
 		
 		this.canvasRef.canvas.addEventListener("wheel",(event:any)=>{
 			let direction = 1;
@@ -197,42 +207,56 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 				this.visualizer.insert(context.data.value,context.data.index);
 				break
 			case VisualizationAction.REMOVE:
-				this.visualizer.remove(context.data.index);
+				this.visualizer.remove(context.data);
 				break
 			case VisualizationAction.CLEAR:
-				this.visualizer.clear()
+				this.visualizer.clear();
 				break
 			case VisualizationAction.PLAY:
-				const result = await this.visualizer.play(context.data) //disable step by step, need data from ui
+				this.algorithmOutput = await this.visualizer.play(context.data);
 				this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
+				this.flashOutput();
 				break
 			case VisualizationAction.RESTART:
 				this.visualizer.restart()
 				break
 			case VisualizationAction.ENABLE_STEP_BY_STEP:
-				this.visualizer.enableStepByStep()
+				this.visualizer.enableStepByStep();
 				break
 			case VisualizationAction.DISABLE_STEP_BY_STEP:
-				this.visualizer.disableStepByStep()
+				this.visualizer.disableStepByStep();
 				break
 			case VisualizationAction.RESUME:
 			case VisualizationAction.NEXT_STEP:
-				this.visualizer.resume()
+				this.visualizer.resume();
 				break
 			case VisualizationAction.PUASE:
-				this.visualizer.pause()
+				this.visualizer.pause();
 				break
 			case VisualizationAction.SET_SPEED:
-				this.visualizer.setSpeed(context.data)
+				this.visualizer.setSpeed(context.data);
 				break
 			case VisualizationAction.SORT:
-				this.visualizer.sort()
+				this.visualizer.sort();
 				break
 			case VisualizationAction.REROLL:
-				this.visualizer.setData(this.dataGeneratorService.getSortedData(context.data,10,this.sketch.height))
+				const data = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ? 
+					 this.dataGeneratorService.getSortedData(context.data,10,this.sketch.height) : 
+					 this.dataGeneratorService.getRandomData(context.data,10,this.sketch.height);
+				this.visualizer.setData(data);
 				break
 		}
-		
+	}
+
+	private flashOutput()
+	{
+		gsap.to(this.algorithmOutputElement.nativeElement,{
+			backgroundColor: this.themeService.getColor("primary-color"),
+            ease: "sine.out",
+            duration: 1,
+            repeat: 1,
+            yoyo: true
+        })
 	}
 }
 // https://github.com/AhsanAyaz/posture-buddy/blob/main/src/app/home/home.component.ts

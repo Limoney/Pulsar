@@ -96,6 +96,11 @@ export class Bar
         else 
             return 0;
     }
+
+    public getWidth()
+    {
+        return this.width;
+    }
       
     [Symbol.for('@@equals')](other: Bar) 
     {

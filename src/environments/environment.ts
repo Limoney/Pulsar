@@ -1,5 +1,5 @@
-import { SleepLock } from "src/app/components/algorithms-page/visualization-panel/utility/SleepLock";
-import { AlgorithmComplexity, AlgorithmDetails, AlgorithmType } from "src/app/interfaces/algorithm-details"
+import { AlgorithmImplementations } from "src/app/algorithms/algorithm-implementations"
+import { AlgorithmComplexity, AlgorithmDataOrderType, AlgorithmDetails, AlgorithmType } from "src/app/interfaces/algorithm-details"
 
 export const Environment = {
     algorithms: {
@@ -10,13 +10,17 @@ export const Environment = {
                 linkName: "bubble-sort",
                 timeComplexity: AlgorithmComplexity.Quadratic,
                 isInPlace: true,
-                type: AlgorithmType.Sorting
+                dataOrderType: AlgorithmDataOrderType.Random,
+                type: AlgorithmType.Sorting,
+                sourceCode: AlgorithmImplementations.bubbleSortSource,
+                implementation: AlgorithmImplementations.bubbleSort
             },
             {
                 name: "Insertion Sort",
                 linkName: "insertion-sort",
                 timeComplexity: AlgorithmComplexity.Quadratic,
                 isInPlace: true,
+                dataOrderType: AlgorithmDataOrderType.Random,
                 type: AlgorithmType.Sorting
             },
             {
@@ -24,6 +28,7 @@ export const Environment = {
                 linkName: "selection-sort",
                 timeComplexity: AlgorithmComplexity.Quadratic,
                 isInPlace: true,
+                dataOrderType: AlgorithmDataOrderType.Random,
                 type: AlgorithmType.Sorting
             },
             {
@@ -31,13 +36,17 @@ export const Environment = {
                 linkName: "merge-sort",
                 timeComplexity: AlgorithmComplexity.Linearithmic,
                 isInPlace: false,
-                type: AlgorithmType.Sorting
+                dataOrderType: AlgorithmDataOrderType.Random,
+                type: AlgorithmType.Sorting,
+                sourceCode: AlgorithmImplementations.mergeSortSource,
+                implementation: AlgorithmImplementations.mergeSortWrapper
             },
             {
                 name: "Quick Sort",
                 linkName: "quick-sort",
                 timeComplexity: AlgorithmComplexity.Linearithmic,
                 isInPlace: true,
+                dataOrderType: AlgorithmDataOrderType.Random,
                 type: AlgorithmType.Sorting
             },
             {
@@ -45,7 +54,10 @@ export const Environment = {
                 linkName: "linear-search",
                 timeComplexity: AlgorithmComplexity.Quadratic,
                 isInPlace: true,
-                type: AlgorithmType.Searching
+                type: AlgorithmType.Searching,
+                dataOrderType: AlgorithmDataOrderType.Random,
+                sourceCode: AlgorithmImplementations.linearSearchSource,
+                implementation: AlgorithmImplementations.linearSearch
             },
             {
                 name: "Binary Search",
@@ -53,68 +65,19 @@ export const Environment = {
                 timeComplexity: AlgorithmComplexity.Logarithmic,
                 isInPlace: true,
                 type: AlgorithmType.Searching,
-                sourceCode: `
-function binarySearch(array,value)
-{
-    let start = 0;
-    let end = array.length-1;
-    while(start < end)
-    {
-        let center = floor((start + end) / 2);
-
-        if(value > array[center])
-            start = center + 1;
-        else if(value < array[center])
-            end = center - 1;
-        else 
-            return center;
-    }
-    return -1;
-}
-                `,
-                implementation: async (visualizer: any,array: number[],value: number) => { //TODO: move it to separate class like AlgorithmImplementations.binarySearch
-                    let start = 0;
-                    let end = array.length-1;
-                    while(start <= end)
-                    {
-                        if(visualizer.forceQuit)
-                        {
-                            return null;
-                        }
-
-                        let center = Math.floor((start + end) / 2);
-                        
-
-                        let startPoint = start;
-                        let endPoint = end;
-                
-                        visualizer.bars[startPoint].mark("#9b59b6");
-                        visualizer.bars[endPoint].mark("#9b59b6");
-                        visualizer.bars[center].mark("#8e44ad");
-                
-                
-                        if(value > array[center])
-                            start = center + 1;
-                        else if(value < array[center])
-                            end = center - 1;
-                        else 
-                        {
-                            return center;
-                        }
-                        
-                        await SleepLock.sleep( () => visualizer.lock );
-                        
-                        if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
-                        {
-                            visualizer.pause();
-                        }
-                        visualizer.bars[startPoint].unmark()
-                        visualizer.bars[endPoint].unmark()
-                        visualizer.bars[center].unmark()
-                        
-                    }
-                    return -1;
-                }
+                dataOrderType: AlgorithmDataOrderType.Sorted,
+                sourceCode: AlgorithmImplementations.binarySearchSource,
+                implementation: AlgorithmImplementations.binarySearch
+            },
+            {
+                name: "Jump Search",
+                linkName: "jump-search",
+                timeComplexity: AlgorithmComplexity.SquareRoot,
+                isInPlace: true,
+                type: AlgorithmType.Searching,
+                dataOrderType: AlgorithmDataOrderType.Sorted,
+                sourceCode: AlgorithmImplementations.jumpSearchSource,
+                implementation: AlgorithmImplementations.jumpSearch
             },
         ] as AlgorithmDetails[]
     }

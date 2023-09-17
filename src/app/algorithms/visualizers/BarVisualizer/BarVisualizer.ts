@@ -3,6 +3,8 @@ import { Camera } from "../../utility/Camera";
 import { SleepLock } from "../../utility/SleepLock";
 import { Bar } from "./Bar";
 import { P5Service } from "src/app/services/p5.service";
+import { AlgorithmOutput } from "src/app/interfaces/algorithm-output";
+import gsap from "gsap";
 
 export class BarVisualizer
 {
@@ -13,9 +15,9 @@ export class BarVisualizer
     protected shouldMakeNextStep;
     public camera;
     private sketchRef: p5;
-    private algorithm: any;
-    private minimumStepDuration = 500;
-    private readonly msBetweenStepsDefault = Bar.animationDuration * 1000 + this.minimumStepDuration;
+    private algorithm: (...args: any[]) => AlgorithmOutput;
+    private minimumStepDuration = 10;
+    private readonly msBetweenStepsDefault = Bar.animationDuration * 1000 + this.minimumStepDuration + 1000;
     private msBetweenSteps = this.msBetweenStepsDefault;
     private forceQuit = false;
 
@@ -44,6 +46,15 @@ export class BarVisualizer
         this.camera.update();
         for(let bar of this.bars)
         {
+            if(!this.camera.isOnScreen(
+                bar.position.x + bar.getWidth()/2,
+                bar.position.y - bar.value / 2,
+                bar.getWidth(),
+                bar.value
+            ))
+            {
+                continue;
+            }
             bar.update();
             bar.show();
         }
@@ -87,7 +98,8 @@ export class BarVisualizer
 
     public clear()
     {
-        this.bars = [];
+        // this.bars = [];
+        this.swap(this.sketchRef.random(this.bars),this.sketchRef.random(this.bars));
     }
     
     public restart()
@@ -115,7 +127,7 @@ export class BarVisualizer
 
     public async play(algorithmData: any)
     {
-        //TODO: fucking params, it cant work like this
+        this.restart();
         this.forceQuit = false;
         return this.algorithm(this,this.bars,algorithmData);
     }
@@ -161,6 +173,11 @@ export class BarVisualizer
         
     }
 
+    public setBarsTest(list: Bar[])
+    {
+        this.bars = list;
+    }
+
     public sort()
     {
         this.bars = this.bars.sort(Bar.compare);
@@ -168,5 +185,39 @@ export class BarVisualizer
         {
             this.bars[i].position.x = this.barSize*i;
         }
+    }
+
+    async swap(leftbarIndex: number,rightBarIndex: number): Promise<void>
+    {        
+        const leftbar = this.bars[leftbarIndex]
+        const rightBar = this.bars[rightBarIndex]
+        
+        const leftbarPos = leftbar.position.copy();
+        const rightBarPos = rightBar.position.copy();
+        
+        return new Promise<void>( (resolve) => {
+            const tl = gsap.timeline({ 
+                onComplete: () => {
+                  let copy = this.bars[leftbarIndex];
+                  this.bars[leftbarIndex] = this.bars[rightBarIndex];
+                  this.bars[rightBarIndex] = copy; 
+                  resolve();
+                }
+              });
+              
+              tl.to(leftbar.position, {
+                x: rightBarPos.x,
+                y: rightBarPos.y,
+                ease: "power4.inOut",
+                duration: Bar.animationDuration
+              });
+              
+              tl.to(rightBar.position, {
+                x: leftbarPos.x,
+                y: leftbarPos.y,
+                ease: "power4.inOut",
+                duration: Bar.animationDuration
+              },'<');
+        })
     }
 }
