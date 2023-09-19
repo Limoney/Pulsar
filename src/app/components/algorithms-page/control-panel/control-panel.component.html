@@ -107,6 +107,16 @@
                 </span>
             </div>
             <div class="column">
+                <span class="p-float-label">
+                    <p-inputNumber inputId="elementMin" #utilityMinlement></p-inputNumber>
+                    <label for="elementCnt">Smallest Element</label>
+                </span>
+                <span class="p-float-label">
+                    <p-inputNumber inputId="elementMax" #utilityMaxlement></p-inputNumber>
+                    <label for="elementCnt">Biggest Element</label>
+                </span>
+            </div>
+            <div class="column">
                 <button class="button-flex is-primary is-primary-hover" (click)="reroll()">Reroll</button>
                 <button class="button-flex is-primary is-primary-hover" (click)="sort()">Sort</button>
             </div>

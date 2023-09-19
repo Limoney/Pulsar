@@ -29,6 +29,10 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { StyleClassModule } from 'primeng/styleclass';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { BlockUIModule } from 'primeng/blockui';
+import 'prismjs/plugins/line-numbers/prism-line-numbers';
+import 'prismjs/plugins/match-braces/prism-match-braces';
+import 'prismjs/plugins/line-highlight/prism-line-highlight';
+// import 'prismjs/plugins/line-highlight/prism-line-highlight';
 
 
 const appRoutes: Routes = [

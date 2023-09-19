@@ -8,7 +8,7 @@ import gsap from "gsap";
 
 export class BarVisualizer
 {
-    protected bars:Bar[] = [];
+    public bars:Bar[] = [];
     public barSize;
     protected lock;
     protected stepByStep;
@@ -20,13 +20,8 @@ export class BarVisualizer
     private readonly msBetweenStepsDefault = Bar.animationDuration * 1000 + this.minimumStepDuration + 1000;
     private msBetweenSteps = this.msBetweenStepsDefault;
     private forceQuit = false;
-
-    static resultStatus = {
-        NODATA: "No Data",
-        FOUND: "Value Found",
-        NOTFOUND: "Value Not Found",
-    }
-
+    private initialData!: number[];
+    
     constructor(algorithm: any, initialData: number[])
     {
         this.sketchRef = new P5Service().getP5Instance();
@@ -105,9 +100,11 @@ export class BarVisualizer
     public restart()
     {
         this.forceQuit = true;
-        for(let bar of this.bars)
+        for(let i=0;i<this.bars.length;i++)
         {
-            bar.fastUnmark();
+            this.bars[i].fastUnmark();
+            this.bars[i].value = this.initialData[i];
+            this.bars[i].setPositionWithIndexFast(i);
         }
     }
 
@@ -127,7 +124,11 @@ export class BarVisualizer
 
     public async play(algorithmData: any)
     {
+        console.log("before res: ");
+        console.log(this.initialData);
         this.restart();
+        console.log("after res: ");
+        console.log(this.initialData);
         this.forceQuit = false;
         return this.algorithm(this,this.bars,algorithmData);
     }
@@ -153,13 +154,14 @@ export class BarVisualizer
 
     public setData(initialData: number[])
     {
+        this.initialData = initialData;
         const initialNumberOfElements = this.bars.length;
-        if(initialNumberOfElements != initialData.length)
+        if(initialNumberOfElements != this.initialData.length)
         {
             this.bars = [];
-            for(let i = 0; i< initialData.length; i++)
+            for(let i = 0; i< this.initialData.length; i++)
             {
-                let bar = new Bar(i*this.barSize,this.sketchRef.height,this.barSize,initialData[i]);
+                let bar = new Bar(i*this.barSize,this.sketchRef.height,this.barSize,this.initialData[i]);
                 this.bars.push(bar); 
             }
         }
@@ -167,15 +169,10 @@ export class BarVisualizer
         {
             for(let i = 0; i< initialNumberOfElements; i++)
             {
-                this.bars[i].value = initialData[i]; 
+                this.bars[i].value = this.initialData[i]; 
             }
         }
         
-    }
-
-    public setBarsTest(list: Bar[])
-    {
-        this.bars = list;
     }
 
     public sort()
@@ -219,5 +216,6 @@ export class BarVisualizer
                 duration: Bar.animationDuration
               },'<');
         })
+        
     }
 }

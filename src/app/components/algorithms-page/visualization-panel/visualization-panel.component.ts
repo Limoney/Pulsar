@@ -17,6 +17,7 @@ import { VisualizationState } from 'src/app/enums/visualization-state';
 import { BarVisualizer } from 'src/app/algorithms/visualizers/BarVisualizer/BarVisualizer';
 import { Bar } from 'src/app/algorithms/visualizers/BarVisualizer/Bar';
 import { AlgorithmOutput } from 'src/app/interfaces/algorithm-output';
+import { PrismService } from 'src/app/services/prism.service';
 
 
 @Component({
@@ -35,6 +36,9 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	@ViewChild("algorithmCode")
 	algorithmCodeElement!: ElementRef;
 
+	@ViewChild("pre")
+	preElement!: ElementRef;
+
 	@ViewChild("output")
 	algorithmOutputElement!: ElementRef;
 
@@ -46,6 +50,10 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	private p5Subscription!: Subscription;
 
+	private prismSubscription!: Subscription;
+
+	private actionSubscription!: Subscription;
+
 	protected backgroundColor!: string
 
 	protected algorithmOutput?: AlgorithmOutput;
@@ -55,7 +63,8 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	constructor(private dataGeneratorService: RandomDataGeneratorService, 
 				private p5Service: P5Service,
 				private visualizationManager: VisualizationManagerService,
-				private themeService: ThemeService)
+				private themeService: ThemeService,
+				private prismService: PrismService)
 	{
 		this.backgroundColor = themeService.getColor("surface-b");
 		Bar.defaultFillColor = themeService.getColor("primary-color");
@@ -101,11 +110,12 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 			
 			if(isP5Ready)
 			{
+				
 				this.sketch = this.p5Service.getP5Instance();
 				this.setupCnavas();
 				this.sketch.draw = this.drawCanvas.bind(this);
 				const boundHandleActions = this.handleUIAction.bind(this);
-				this.visualizationManager.getActions().subscribe((actions) => {
+				this.actionSubscription = this.visualizationManager.getActions().subscribe((actions) => {
 					this.visualizationManager.softClear();
 					
 					for(const action of actions)
@@ -117,13 +127,19 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 		})
 		
 		// https://techincent.com/code-syntax-highlighter-angular-with-prism-js/
-		Prism.highlightElement(this.algorithmCodeElement.nativeElement);
+		this.prismSubscription = this.prismService.getHighlightedLines().subscribe((lines) => {
+			this.preElement.nativeElement.dataset.line = lines;
+			Prism.highlightElement(this.algorithmCodeElement.nativeElement);
+		})
 		
 	}
 
 	ngOnDestroy(): void {
+		this.prismService.highlightLines("");
 		this.p5Subscription.unsubscribe();
-		
+		this.prismSubscription.unsubscribe();
+		this.actionSubscription.unsubscribe();
+		console.log("destroyed");
 	}
 
 	@HostListener('window:resize', ['$event'])
@@ -157,8 +173,8 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 		this.canvasRef.parent("canvas-wrapper");
 		this.onResize(null);
 		const data = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ? 
-					 this.dataGeneratorService.getSortedData(20,10,this.sketch.height) : 
-					 this.dataGeneratorService.getRandomData(20,10,this.sketch.height);
+					 this.dataGeneratorService.getSortedData(10,10,this.sketch.height) : 
+					 this.dataGeneratorService.getRandomData(10,10,this.sketch.height);
 		this.visualizer = new BarVisualizer(this.algorithmDetails.implementation,data);
 		
 		this.canvasRef.canvas.addEventListener("wheel",(event:any)=>{
@@ -216,9 +232,10 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 				this.algorithmOutput = await this.visualizer.play(context.data);
 				this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 				this.flashOutput();
+				this.prismService.highlightLines("");
 				break
 			case VisualizationAction.RESTART:
-				this.visualizer.restart()
+				this.visualizer.restart();
 				break
 			case VisualizationAction.ENABLE_STEP_BY_STEP:
 				this.visualizer.enableStepByStep();

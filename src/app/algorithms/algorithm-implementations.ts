@@ -2,19 +2,46 @@ import { SleepLock } from "src/app/algorithms/utility/SleepLock";
 import { Timer } from "src/app/algorithms/utility/Timer";
 import { AlgorithmOutput } from "src/app/interfaces/algorithm-output"
 import { ThemeService } from "../services/theme.service";
+import { Bar } from "./visualizers/BarVisualizer/Bar";
+import gsap from "gsap";
+import { Injectable } from "@angular/core";
+import { PrismService } from "../services/prism.service";
+
+@Injectable({
+    providedIn: 'root'
+})
 export class AlgorithmImplementations
 {
+    private forcefulyTerminatedMessage = "forcefully terminated";
 
-    private static forcefulyTerminatedMessage = "forcefully terminated";
-    private static valueFoundMessage = "value found at index ";
-    private static valueNotFoundMessage = "value not found ";
-    // private static themeService = new ThemeService();
-    // private static markColorLight = AlgorithmImplementations.themeService.getColor("purple-500")
-    // private static markColorDark = AlgorithmImplementations.themeService.getColor("purple-600")
-    private static markColorLight = "#9b59b6";
-    private static markColorDark = "#8e44ad";
+    private valueFoundMessage = "value found at index ";
 
-    public static readonly binarySearchSource = `
+    private valueNotFoundMessage = "value not found ";
+
+    // private themeService = new ThemeService();
+    // private markColorLight = this.themeService.getColor("purple-500")
+    // private markColorDark = this.themeService.getColor("purple-600")
+
+    private markColorLight = "#9b59b6";
+
+    private markColorDark = "#8e44ad";
+
+    static instance: AlgorithmImplementations;
+
+    constructor(private prismService: PrismService)
+    {
+        if(!AlgorithmImplementations.instance)
+        {
+            AlgorithmImplementations.instance = this;
+        }
+    }
+  
+    static getInstance() {
+      
+      return this.instance;
+    }
+
+    public readonly binarySearchSource = `
     function binarySearch(array,value)
     {
         let start = 0;
@@ -34,17 +61,18 @@ export class AlgorithmImplementations
     }
     `;
 
-    static async binarySearch(visualizer: any,array: number[],value: number) {
+    async binarySearch(visualizer: any,array: number[],value: number) {
         let start = 0;
         let end = array.length-1;
         const timer = new Timer();
+        this.prismService.highlightLines("7-17");
         while(start <= end)
         {
             if(visualizer.forceQuit)
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            null,
-                                           AlgorithmImplementations.forcefulyTerminatedMessage);
+                                           this.forcefulyTerminatedMessage);
             }
 
             let center = Math.floor((start + end) / 2);
@@ -53,9 +81,9 @@ export class AlgorithmImplementations
             let startPoint = start;
             let endPoint = end;
     
-            visualizer.bars[startPoint].mark(AlgorithmImplementations.markColorLight);
-            visualizer.bars[endPoint].mark(AlgorithmImplementations.markColorLight);
-            visualizer.bars[center].mark(AlgorithmImplementations.markColorDark);
+            visualizer.bars[startPoint].mark(this.markColorLight);
+            visualizer.bars[endPoint].mark(this.markColorLight);
+            visualizer.bars[center].mark(this.markColorDark);
     
     
             if(value > array[center])
@@ -66,7 +94,7 @@ export class AlgorithmImplementations
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            center,
-                                           AlgorithmImplementations.valueFoundMessage + center);
+                                           this.valueFoundMessage + center);
             }
             timer.pause();
             await SleepLock.sleep( () => visualizer.lock );
@@ -82,10 +110,10 @@ export class AlgorithmImplementations
         }
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            -1,
-                                           AlgorithmImplementations.valueNotFoundMessage);
+                                           this.valueNotFoundMessage);
     }
     
-    public static readonly linearSearchSource = `
+    public readonly linearSearchSource = `
     function linearSearch(array,value)
     {
         for(let i = 0; i < array.length; i++)
@@ -99,24 +127,25 @@ export class AlgorithmImplementations
     }
     `;
 
-    static async linearSearch(visualizer: any,array: number[],value: number) {
+    async linearSearch(visualizer: any,array: number[],value: number) {
         const timer = new Timer();
 
+        this.prismService.highlightLines("5-11");
         for(let i = 0; i < array.length ;i++)
         {
             if(visualizer.forceQuit)
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            null,
-                                          AlgorithmImplementations.forcefulyTerminatedMessage);
+                                          this.forcefulyTerminatedMessage);
             }
 
-            visualizer.bars[i].mark(AlgorithmImplementations.markColorLight);
+            visualizer.bars[i].mark(this.markColorLight);
             if(array[i] == value)
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            i,
-                                           AlgorithmImplementations.valueFoundMessage + i);
+                                           this.valueFoundMessage + i);
             }
             timer.pause();
             await SleepLock.sleep( () => visualizer.lock );
@@ -130,11 +159,11 @@ export class AlgorithmImplementations
 
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            -1,
-                                           AlgorithmImplementations.valueNotFoundMessage);
+                                           this.valueNotFoundMessage);
     }
 
     //https://en.wikipedia.org/wiki/Jump_search
-    public static readonly jumpSearchSource = `
+    public readonly jumpSearchSource = `
     function jumpSearch(array,value)
     {
         let currentIndex = 0;
@@ -166,19 +195,20 @@ export class AlgorithmImplementations
     }
     `;
     
-    static async jumpSearch(visualizer: any,array: number[],value: number)
+    async jumpSearch(visualizer: any,array: number[],value: number)
     {
         const timer = new Timer();
         let currentIndex = 0;
         const initialStep = Math.floor(Math.sqrt(array.length));
         let step = initialStep;
+        this.prismService.highlightLines("8-14");
         while(array[Math.min(step,array.length)-1] < value)
         {
             if(visualizer.forceQuit)
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            null,
-                                          AlgorithmImplementations.forcefulyTerminatedMessage);
+                                          this.forcefulyTerminatedMessage);
             }
             currentIndex = step;
             step += initialStep;
@@ -186,9 +216,9 @@ export class AlgorithmImplementations
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            -1,
-                                           AlgorithmImplementations.valueNotFoundMessage);
+                                           this.valueNotFoundMessage);
             }
-            visualizer.bars[currentIndex].mark(AlgorithmImplementations.markColorDark);
+            visualizer.bars[currentIndex].mark(this.markColorDark);
 
             timer.pause();
             await SleepLock.sleep( () => visualizer.lock );
@@ -200,23 +230,24 @@ export class AlgorithmImplementations
             // visualizer.bars[currentIndex].unmark();
         }
 
+        this.prismService.highlightLines("16-21");
         while(array[currentIndex] < value)
         {
             if(visualizer.forceQuit)
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            null,
-                                          AlgorithmImplementations.forcefulyTerminatedMessage);
+                                          this.forcefulyTerminatedMessage);
             }
             currentIndex += 1;
             if(currentIndex == Math.min(step,array.length))
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            -1,
-                                           AlgorithmImplementations.valueNotFoundMessage);
+                                           this.valueNotFoundMessage);
             }
 
-            visualizer.bars[currentIndex].mark(AlgorithmImplementations.markColorLight);
+            visualizer.bars[currentIndex].mark(this.markColorLight);
             timer.pause();
             await SleepLock.sleep( () => visualizer.lock );
             timer.continue();
@@ -227,22 +258,23 @@ export class AlgorithmImplementations
             visualizer.bars[currentIndex].unmark();
         }
 
+        this.prismService.highlightLines("23-30");
         if(array[currentIndex] == value)
         {
-            visualizer.bars[currentIndex].mark(AlgorithmImplementations.markColorLight);
+            visualizer.bars[currentIndex].mark(this.markColorLight);
             return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            currentIndex,
-                                           AlgorithmImplementations.valueFoundMessage + currentIndex);
+                                           this.valueFoundMessage + currentIndex);
         }
         else
         {
             return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            -1,
-                                           AlgorithmImplementations.valueNotFoundMessage);
+                                           this.valueNotFoundMessage);
         }
     }
 
-    public static readonly bubbleSortSource = `
+    public readonly bubbleSortSource = `
     function bubbleSort(array)
     {
         let remainingElements = array.length;
@@ -260,10 +292,10 @@ export class AlgorithmImplementations
         } while(remainingElements > 1)
     }
     `
-    public static async bubbleSort(visualizer: any,array: any[])
+    public async bubbleSort(visualizer: any,array: any[])
     {
         const timer = new Timer();
-        // debugger;
+        this.prismService.highlightLines("6-17");
         let remainingElements = array.length;
         do {
             for(let i = 0; i<remainingElements - 1; i++)
@@ -272,11 +304,11 @@ export class AlgorithmImplementations
                 {
                     return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                                null,
-                                               AlgorithmImplementations.forcefulyTerminatedMessage);
+                                               this.forcefulyTerminatedMessage);
                 }
 
-                visualizer.bars[i].mark(AlgorithmImplementations.markColorLight);
-                visualizer.bars[i+1].mark(AlgorithmImplementations.markColorLight);
+                visualizer.bars[i].mark(this.markColorLight);
+                visualizer.bars[i+1].mark(this.markColorLight);
                 timer.pause();
                 await SleepLock.sleep( () => visualizer.lock );
                 if(array[i].value > array[i + 1].value)
@@ -299,7 +331,7 @@ export class AlgorithmImplementations
                                                "done");
     }
 
-    public static readonly mergeSortSource = `
+    public readonly mergeSortSource = `
     function mergeSort(array)
     {
         if(array.length <= 1)
@@ -355,71 +387,151 @@ export class AlgorithmImplementations
     }
     `
 
-    public static async mergeSortWrapper(visualizer: any, array: any[])
+    public async mergeSortWrapper(visualizer: any, array: any[])
     {
         const timer = new Timer();
-        const output = await AlgorithmImplementations.mergeSort(visualizer,timer,array);
-        console.log(output);
-        visualizer.setBarsTest(output);
+        const output = await this.mergeSort(visualizer,timer,array,0);
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                                null,
                                                "done");
     }
 
-    private static async mergeSort(visualizer: any,timer: Timer, array: any[]): Promise<any[]>
+    private async mergeSort(visualizer: any,timer: Timer, array: any[],elementsBefore :number): Promise<any>
     {
+        if(visualizer.forceQuit)
+        {
+            return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                        null,
+                                        this.forcefulyTerminatedMessage);
+        }
+
         if(array.length <= 1)
         {
+            timer.pause();
+            this.prismService.highlightLines("5-8");
+            array.forEach(x => x.mark(this.markColorDark))
+            
+            await SleepLock.sleep( () => visualizer.lock );
+            if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+            {
+                visualizer.pause();
+            }
+            
+            array.forEach(x => x.unmark())
+            timer.continue();
             return array;
         }
 
+        this.prismService.highlightLines("10-15");
         const center =  Math.floor(array.length/2);
         let leftArrayUnsorted = array.slice(0,center);
         let rightArrayUnsorted = array.slice(center);
+        
+        leftArrayUnsorted.forEach(elem => elem.mark(this.markColorLight))
+        rightArrayUnsorted.forEach(elem => elem.mark(this.markColorLight))
 
-        let leftArraySorted = await AlgorithmImplementations.mergeSort(visualizer,timer,leftArrayUnsorted);
-        let rightArraySorted = await AlgorithmImplementations.mergeSort(visualizer,timer,rightArrayUnsorted);
+        timer.pause();
+        await SleepLock.sleep( () => visualizer.lock );
+        if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+        {
+            visualizer.pause();
+        }
+        timer.continue();
 
-        const merged = AlgorithmImplementations.merge(visualizer,leftArraySorted,rightArraySorted);
-        //visualizer.setData(merged);
-        // await SleepLock.sleep( () => visualizer.lock );
+        leftArrayUnsorted.forEach(elem => elem.unmark());
+        rightArrayUnsorted.forEach(elem => elem.unmark());
+
+        const newElementsBefore = elementsBefore + leftArrayUnsorted.length;
+        
+        let leftArraySorted = await this.mergeSort(visualizer,timer,leftArrayUnsorted,elementsBefore);
+        let rightArraySorted = await this.mergeSort(visualizer,timer,rightArrayUnsorted,newElementsBefore);
+
+        // let [leftArraySorted, rightArraySorted] = await Promise.all([
+        //     this.mergeSort(visualizer,timer,leftArrayUnsorted,elementsBefore),
+        //     this.mergeSort(visualizer,timer,rightArrayUnsorted,newElementsBefore)
+        // ])
+        
+        const merged = await this.merge(visualizer,timer,leftArraySorted,rightArraySorted,elementsBefore);
         return merged;
     }
 
-    private static async merge(visualizer: any,left: any[], right: any[]): Promise<any[]>
+    //TODO: fix reset button while merge is running
+    private async merge(visualizer: any,timer: Timer,left: any[], right: any[],leftOffset :number): Promise<any>
     {
-        let merged = [];
-        let leftIndex = 0;
-        let rightIndex = 0;
-        let mergedIndex = 0;
-        while( leftIndex < left.length && rightIndex < right.length)
+        if(visualizer.forceQuit)
         {
-            if(left[leftIndex] < right[rightIndex])
+            return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                        null,
+                                        this.forcefulyTerminatedMessage);
+        }
+
+        timer.pause();
+        this.prismService.highlightLines("17,26-54");
+        left.forEach(elem => elem.mark(this.markColorLight))
+        right.forEach(elem => elem.mark(this.markColorDark))
+
+        
+        await SleepLock.sleep( () => visualizer.lock );
+        if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+        {
+            visualizer.pause();
+        }
+
+        left.forEach(elem => elem.unmark());
+        right.forEach(elem => elem.unmark());
+        timer.continue();
+        
+        return new Promise<any[]>( (resolve)=>{
+
+            let merged:any[] = [];
+            let leftIndex = 0;
+            let rightIndex = 0;
+            let mergedIndex = 0;
+
+            const timeline = gsap.timeline({
+                onComplete: () =>{
+                    resolve(merged);
+                },
+                duration: Bar.animationDuration
+            })
+
+            while( leftIndex < left.length && rightIndex < right.length)
+            {
+                if(left[leftIndex] < right[rightIndex])
+                {
+                    merged[mergedIndex] = left[leftIndex];
+                    merged[mergedIndex].setPositionWithIndex(timeline,leftOffset + mergedIndex);
+                    leftIndex++;
+                }
+                else
+                {
+                    merged[mergedIndex] = right[rightIndex];
+                    merged[mergedIndex].setPositionWithIndex(timeline,leftOffset + mergedIndex);
+                    rightIndex++;
+                }
+                mergedIndex++;
+            }
+
+            while(leftIndex < left.length)
             {
                 merged[mergedIndex] = left[leftIndex];
+                merged[mergedIndex].setPositionWithIndex(timeline,leftOffset + mergedIndex);
+
+                mergedIndex++;
                 leftIndex++;
             }
-            else
+
+            while(rightIndex < right.length)
             {
                 merged[mergedIndex] = right[rightIndex];
+                merged[mergedIndex].setPositionWithIndex(timeline,leftOffset + mergedIndex);
+
+                mergedIndex++;
                 rightIndex++;
             }
-            mergedIndex++;
-        }
-
-        while(leftIndex < left.length)
-        {
-            merged[mergedIndex] = left[leftIndex];
-            mergedIndex++;
-            leftIndex++;
-        }
-
-        while(rightIndex < right.length)
-        {
-            merged[mergedIndex] = right[rightIndex];
-            mergedIndex++;
-            rightIndex++;
-        }
-        return merged;
+        })
     }
+
+    
 }
+// export default AlgorithmImplementations.getInstance();

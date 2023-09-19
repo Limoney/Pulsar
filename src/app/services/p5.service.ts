@@ -35,15 +35,4 @@ export class P5Service {
 	getP5Instance() {
 		return P5Service.instance;
 	}
-
-
-	// setParent(id: string) {
-	// 	if (P5Service.canvasRef) {
-
-	// 	}
-	// }
-
-	// deleteInstance() {
-	// 	P5Service.instance.remove();
-	// }
 }

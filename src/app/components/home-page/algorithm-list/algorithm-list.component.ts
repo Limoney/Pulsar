@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { DataViewLayoutOptions } from 'primeng/dataview';
 import { Environment } from '../../../../environments/environment';
-import { AlgorithmType } from 'src/app/interfaces/algorithm-details';
+import { AlgorithmDetails, AlgorithmType } from 'src/app/interfaces/algorithm-details';
+import { AlgorithmConfigService } from 'src/app/services/algorithm-config.service';
 
 @Component({
 	selector: 'app-algorithms',
@@ -9,7 +10,13 @@ import { AlgorithmType } from 'src/app/interfaces/algorithm-details';
 	styleUrls: ['./algorithm-list.component.css']
 })
 export class AlgorithmListComponent {
-	protected algorithmsRoute = Environment.algorithms.urlPrefix;
-	protected algorithmList = Environment.algorithms.list;
+	protected algorithmsRoute: string;
+	protected algorithmList: AlgorithmDetails[];
 	protected algorithmTypes: typeof AlgorithmType = AlgorithmType;
+
+	constructor(private algorithmConfing: AlgorithmConfigService)
+	{
+		this.algorithmsRoute = algorithmConfing.algorithms.urlPrefix;
+		this.algorithmList = algorithmConfing.algorithms.list;
+	}
 }

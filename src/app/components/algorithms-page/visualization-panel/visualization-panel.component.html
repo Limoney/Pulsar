@@ -23,8 +23,8 @@
        
         <div class="code-window">
             <h2>{{algorithmDetails.name}}</h2>
-            <pre>
-                <code class="language-javascript" id="algorithmCode" #algorithmCode>
+            <pre data-line="1-8, 10" #pre>
+                <code class="language-javascript line-numbers match-braces" id="algorithmCode" #algorithmCode>
                     {{algorithmDetails.sourceCode}}
                 </code>
             </pre>

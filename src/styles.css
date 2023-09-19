@@ -538,6 +538,12 @@ td::before
     display: none;
 }
 
+/* P R I S M   J S */
+.line-numbers .line-numbers-rows
+{
+    left: -11rem !important;
+    /* background: red; */
+}
 
 /* MEDIA */
 

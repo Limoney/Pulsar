@@ -87,6 +87,22 @@ export class Bar
         return this.value;
     }
 
+    public setPositionWithIndex(timeline: gsap.core.Timeline,indexInArray: number)
+    {
+        console.log("addingToTimeline");
+        
+        timeline.to(this.position,{
+            x: this.width * indexInArray,
+            y: this.sketch.height
+        },'<')
+    }
+
+    public setPositionWithIndexFast(indexInArray: number)
+    {
+        this.position.x = this.width * indexInArray;
+        this.position.y = this.sketch.height;
+    }
+
     static compare(left: Bar,right: Bar)
     {
         if (left.value < right.value) 
