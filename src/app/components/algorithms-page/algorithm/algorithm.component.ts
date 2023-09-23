@@ -3,20 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { AlgorithmDetails, AlgorithmType } from 'src/app/interfaces/algorithm-details';
 import { algorithmPageTransition } from 'src/app/route-animations';
 import { AlgorithmConfigService } from 'src/app/services/algorithm-config.service';
-import { Environment } from 'src/environments/environment';
 
 @Component({
-	selector: 'app-algorithms',
-	templateUrl: './algorithms-page.component.html',
-	styleUrls: ['./algorithms-page.component.css'],
-	animations: [
-		algorithmPageTransition
-	]
+  selector: 'app-algorithm',
+  templateUrl: './algorithm.component.html',
+  styleUrls: ['./algorithm.component.css']
 })
-export class AlgorithmsPageComponent implements OnInit {
-
-	protected loading: boolean = true;
-	protected currentAlgorithm?: AlgorithmDetails;
+export class AlgorithmComponent {
+  protected loading: boolean = true;
+	protected currentAlgorithm!: AlgorithmDetails;
 	protected currentAlgorithmIndex: number = 0;
 
 	constructor(private route: ActivatedRoute, private algorithmConfig: AlgorithmConfigService) { 
@@ -24,8 +19,9 @@ export class AlgorithmsPageComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.route.queryParams.subscribe(params => {
+		this.route.params.subscribe(params => {
 			const name = params['name'];
+      
 			if(name)
 			{
 				this.currentAlgorithmIndex = this.algorithmConfig.algorithms.list.map(elem => elem.linkName).indexOf(name);
@@ -33,18 +29,5 @@ export class AlgorithmsPageComponent implements OnInit {
 			}
 			this.loading = false;
 		});
-	}
-	playAnim(outlet: any)
-	{
-		const result = outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
-		console.log("algo-amim: "+ result);
-		
-		return result;
-	}
-
-	test()
-	{
-		console.log("algo-router activated");
-		
 	}
 }

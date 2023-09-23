@@ -25,6 +25,7 @@ export class P5Service {
 				};
 			})
 		}
+		
 	}
 
 	ready(): Observable<boolean>

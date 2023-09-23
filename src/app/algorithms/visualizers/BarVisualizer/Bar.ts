@@ -4,23 +4,24 @@ import { P5Service } from "src/app/services/p5.service";
 
 export class Bar
 {
-    private width: number;
+    public static defaultFillColor = "#eeeeee";
+    public static defaultStrokeColor = "#a9a9a9";
+    public static animationDuration = 1;
+    public static width: number = 100;
+
     public fillColor: string;
     public strokeColor: string;
     public strokeSize: number = 1;
     public position: p5.Vector; //TODO: make me private
     public value: number;
     private sketch: p5;
-    static defaultFillColor = "#eeeeee";
-    static defaultStrokeColor = "#a9a9a9";
-    static animationDuration = 1;
+
+    
 
     constructor(x: number,y: number,w: number,v: number)
     {
-        // debugger;
         this.sketch = new P5Service().getP5Instance();
         this.position = this.sketch.createVector(x,y)
-        this.width = w;
         this.value = v;
         this.fillColor = Bar.defaultFillColor;
         this.strokeColor = Bar.defaultStrokeColor;
@@ -30,18 +31,16 @@ export class Bar
     {
         this.position.y = this.sketch.height;
     }
-    // TODO: p5 as a service
-    // ok but how do you inject?
-    // nvm not service
+
     show()
     {
         this.sketch.fill(this.fillColor);
         this.sketch.stroke(this.strokeColor);
-        this.sketch.rect(this.position.x,this.position.y,this.width,-this.value);
+        this.sketch.rect(this.position.x,this.position.y,Bar.width,-this.value);
 
         this.sketch.fill(255);
         this.sketch.noStroke();
-        this.sketch.text(this.value,this.position.x + this.width*0.5,this.sketch.height-this.value);
+        this.sketch.text(this.value,this.position.x + Bar.width*0.5,this.sketch.height-this.value);
     }
 
     mark(color: string)
@@ -92,14 +91,14 @@ export class Bar
         console.log("addingToTimeline");
         
         timeline.to(this.position,{
-            x: this.width * indexInArray,
+            x: Bar.width * indexInArray,
             y: this.sketch.height
         },'<')
     }
 
     public setPositionWithIndexFast(indexInArray: number)
     {
-        this.position.x = this.width * indexInArray;
+        this.position.x = Bar.width * indexInArray;
         this.position.y = this.sketch.height;
     }
 
@@ -111,11 +110,6 @@ export class Bar
             return 1;
         else 
             return 0;
-    }
-
-    public getWidth()
-    {
-        return this.width;
     }
       
     [Symbol.for('@@equals')](other: Bar) 

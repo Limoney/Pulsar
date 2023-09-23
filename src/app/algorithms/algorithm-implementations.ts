@@ -35,9 +35,9 @@ export class AlgorithmImplementations
             AlgorithmImplementations.instance = this;
         }
     }
-  
+
     static getInstance() {
-      
+
       return this.instance;
     }
 
@@ -49,12 +49,12 @@ export class AlgorithmImplementations
         while(start < end)
         {
             let center = floor((start + end) / 2);
-    
+
             if(value > array[center])
                 start = center + 1;
             else if(value < array[center])
                 end = center - 1;
-            else 
+            else
                 return center;
         }
         return -1;
@@ -76,21 +76,21 @@ export class AlgorithmImplementations
             }
 
             let center = Math.floor((start + end) / 2);
-            
+
 
             let startPoint = start;
             let endPoint = end;
-    
+
             visualizer.bars[startPoint].mark(this.markColorLight);
             visualizer.bars[endPoint].mark(this.markColorLight);
             visualizer.bars[center].mark(this.markColorDark);
-    
-    
+
+
             if(value > array[center])
                 start = center + 1;
             else if(value < array[center])
                 end = center - 1;
-            else 
+            else
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            center,
@@ -106,13 +106,13 @@ export class AlgorithmImplementations
             visualizer.bars[startPoint].unmark()
             visualizer.bars[endPoint].unmark()
             visualizer.bars[center].unmark()
-            
+
         }
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            -1,
                                            this.valueNotFoundMessage);
     }
-    
+
     public readonly linearSearchSource = `
     function linearSearch(array,value)
     {
@@ -194,7 +194,7 @@ export class AlgorithmImplementations
         }
     }
     `;
-    
+
     async jumpSearch(visualizer: any,array: number[],value: number)
     {
         const timer = new Timer();
@@ -312,7 +312,7 @@ export class AlgorithmImplementations
                 timer.pause();
                 await SleepLock.sleep( () => visualizer.lock );
                 if(array[i].value > array[i + 1].value)
-                {                    
+                {
                     await visualizer.swap(i,i+1)
                 }
                 timer.continue();
@@ -324,7 +324,7 @@ export class AlgorithmImplementations
                 visualizer.bars[i+1].unmark();
             }
             remainingElements -= 1;
-            
+
         } while(remainingElements > 1);
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                                null,
@@ -410,39 +410,40 @@ export class AlgorithmImplementations
             timer.pause();
             this.prismService.highlightLines("5-8");
             array.forEach(x => x.mark(this.markColorDark))
-            
+
             await SleepLock.sleep( () => visualizer.lock );
             if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
             {
                 visualizer.pause();
             }
-            
+
             array.forEach(x => x.unmark())
             timer.continue();
             return array;
         }
 
-        this.prismService.highlightLines("10-15");
         const center =  Math.floor(array.length/2);
         let leftArrayUnsorted = array.slice(0,center);
         let rightArrayUnsorted = array.slice(center);
-        
+
+        timer.pause();
+        this.prismService.highlightLines("10-15");
         leftArrayUnsorted.forEach(elem => elem.mark(this.markColorLight))
         rightArrayUnsorted.forEach(elem => elem.mark(this.markColorLight))
 
-        timer.pause();
         await SleepLock.sleep( () => visualizer.lock );
         if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
         {
             visualizer.pause();
         }
-        timer.continue();
 
         leftArrayUnsorted.forEach(elem => elem.unmark());
         rightArrayUnsorted.forEach(elem => elem.unmark());
 
+        timer.continue();
+
         const newElementsBefore = elementsBefore + leftArrayUnsorted.length;
-        
+
         let leftArraySorted = await this.mergeSort(visualizer,timer,leftArrayUnsorted,elementsBefore);
         let rightArraySorted = await this.mergeSort(visualizer,timer,rightArrayUnsorted,newElementsBefore);
 
@@ -450,12 +451,11 @@ export class AlgorithmImplementations
         //     this.mergeSort(visualizer,timer,leftArrayUnsorted,elementsBefore),
         //     this.mergeSort(visualizer,timer,rightArrayUnsorted,newElementsBefore)
         // ])
-        
+
         const merged = await this.merge(visualizer,timer,leftArraySorted,rightArraySorted,elementsBefore);
         return merged;
     }
 
-    //TODO: fix reset button while merge is running
     private async merge(visualizer: any,timer: Timer,left: any[], right: any[],leftOffset :number): Promise<any>
     {
         if(visualizer.forceQuit)
@@ -470,7 +470,7 @@ export class AlgorithmImplementations
         left.forEach(elem => elem.mark(this.markColorLight))
         right.forEach(elem => elem.mark(this.markColorDark))
 
-        
+
         await SleepLock.sleep( () => visualizer.lock );
         if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
         {
@@ -480,7 +480,7 @@ export class AlgorithmImplementations
         left.forEach(elem => elem.unmark());
         right.forEach(elem => elem.unmark());
         timer.continue();
-        
+
         return new Promise<any[]>( (resolve)=>{
 
             let merged:any[] = [];
@@ -490,6 +490,7 @@ export class AlgorithmImplementations
 
             const timeline = gsap.timeline({
                 onComplete: () =>{
+                    timer.continue();
                     resolve(merged);
                 },
                 duration: Bar.animationDuration
@@ -529,9 +530,306 @@ export class AlgorithmImplementations
                 mergedIndex++;
                 rightIndex++;
             }
+            timer.pause();
         })
     }
 
-    
+    public readonly insertionSortSource = `
+    function insertionSort(array)
+    {
+        for(let i= 0; i < array.length; i++)
+        {
+            let currentElement = array[i];
+            let j = i-1
+            while(j >= 0 && array[j] > currentElement)
+            {
+                array[j+1] = array[j];
+                j--;
+            }
+            array[j+1] = currentElement;
+        }
+    }
+    `
+    public async insertionSort(visualizer: any,array: any[])
+    {
+        const timer = new Timer();
+        this.prismService.highlightLines("5-15");
+        for(let i= 0; i < array.length; i++)
+        {
+            let currentElement = array[i];
+            array[i].mark(this.markColorDark);
+            let j = i-1
+            let swapped = []
+
+            timer.pause();
+            await SleepLock.sleep( () => visualizer.lock );
+            if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+            {
+                visualizer.pause();
+            }
+            timer.continue();
+
+            while(j >= 0 && array[j] > currentElement)
+            {
+                if(visualizer.forceQuit)
+                {
+                    return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                               null,
+                                               this.forcefulyTerminatedMessage);
+                }
+                // array[j+1] = array[j];
+                array[j].mark(this.markColorLight);
+                swapped.push(j);
+                timer.pause();
+                await visualizer.swap(j,j+1)
+                j--;
+
+                await SleepLock.sleep( () => visualizer.lock );
+                if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+                {
+                    visualizer.pause();
+                }
+                timer.continue();
+            }
+            // array[j+1] = currentElement;
+            swapped.forEach((index) => array[index].unmark());
+            array[i].unmark();
+        }
+        return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                               null,
+                                               "done");
+    }
+
+    public readonly selectionSortSource = `
+    function selectionSort(array)
+    {
+        for(let i=0; i<array.length-1; i++)
+        {
+            let smallestElementIndex = i;
+            for(let j=i+1; j<array.length; j++)
+            {
+                if(array[j] < array[smallestElementIndex])
+                {
+                    smallestElementIndex = j;
+                }
+            }
+
+            if(smallestElementIndex != i)
+            {
+                let smallestElementCopy = array[smallestElementIndex];
+                array[smallestElementIndex] = array[i];
+                array[i] = smallestElementCopy;
+            }
+        }
+    }
+    `;
+
+    public async selectionSort(visualizer: any,array: any[])
+    {
+        const timer = new Timer();
+        for(let i=0; i<array.length-1; i++)
+        {
+            if(visualizer.forceQuit)
+            {
+                return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                            null,
+                                            this.forcefulyTerminatedMessage);
+            }
+
+            this.prismService.highlightLines("7-14");
+            array[i].mark(this.markColorDark);
+            let smallestElementIndex = i;
+            for(let j=i+1; j<array.length; j++)
+            {
+                if(visualizer.forceQuit)
+                {
+                    return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                               null,
+                                               this.forcefulyTerminatedMessage);
+                }
+
+                array[j].mark(this.markColorLight);
+
+                timer.pause();
+                await SleepLock.sleep( () => visualizer.lock );
+                if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+                {
+                    visualizer.pause();
+                }
+                timer.continue();
+
+                if(array[j] < array[smallestElementIndex])
+                {
+                    smallestElementIndex = j;
+                }
+                array[j].unmark();
+            }
+
+            this.prismService.highlightLines("16-21");
+            if(smallestElementIndex != i)
+            {
+                timer.pause();
+                array[smallestElementIndex].mark(this.markColorDark);
+                await SleepLock.sleep( () => visualizer.lock );
+                if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+                {
+                    visualizer.pause();
+                }
+                await visualizer.swap(smallestElementIndex,i);
+                array[smallestElementIndex].unmark();
+                timer.continue();
+            }
+            timer.pause();
+            await SleepLock.sleep( () => visualizer.lock );
+            if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+            {
+                visualizer.pause();
+            }
+            timer.continue();
+            array[i].unmark();
+        }
+        return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                            null,
+                                            "done");
+    }
+
+    public readonly quickSortSource = `
+    function quickSort(array, startIndex, endIndex) {
+        if (startIndex >= 0 && endIndex >= 0 && startIndex < endIndex) {
+            const pivotIndex = partitionHoare(array, startIndex, endIndex);
+
+            quickSort(array, startIndex, pivotIndex);
+            quickSort(array, pivotIndex + 1, endIndex);
+        }
+    }
+
+    function partitionHoare(array, startIndex, endIndex) {
+        const pivot = array[Math.floor((endIndex - startIndex) / 2) + startIndex];
+
+        let leftIndex = startIndex - 1;
+        let rightIndex = endIndex + 1;
+
+        while (true) {
+            do {
+                leftIndex += 1;
+            } while (array[leftIndex] < pivot);
+
+            do {
+                rightIndex -= 1;
+            } while (array[rightIndex] > pivot);
+
+            if (leftIndex >= rightIndex) {
+                return rightIndex;
+            }
+
+            const rightCopy = array[rightIndex];
+            array[rightIndex] = array[leftIndex];
+            array[leftIndex] = rightCopy;
+        }
+    }
+    `;
+
+    public async quickSortWrapper(visualizer: any, array: any[])
+    {
+        const timer = new Timer();
+        this.prismService.highlightLines("4-9");
+        timer.pause();
+        await SleepLock.sleep( () => visualizer.lock );
+        if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+        {
+            visualizer.pause();
+        }
+        timer.continue();
+        const output = await this.quickSort(visualizer,timer,array,0,array.length-1);
+        return new AlgorithmOutput(new Date(timer.getElapsedTime()),
+                                               null,
+                                               "done");
+    }
+
+    private async quickSort(visualizer: any,timer: Timer,array: any[],startIndex: number, endIndex: number)
+    {
+        if (startIndex >= 0 && endIndex >= 0 && startIndex < endIndex) {
+
+            const pivotIndex = await this.partitionHoare(visualizer,timer,array, startIndex, endIndex);
+            array[pivotIndex].mark(this.markColorDark);
+            this.prismService.highlightLines("7-8");
+
+            timer.pause();
+            await SleepLock.sleep( () => visualizer.lock );
+            if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+            {
+                visualizer.pause();
+            }
+            array[pivotIndex].unmark();
+            timer.continue();
+
+            await this.quickSort(visualizer,timer,array, startIndex, pivotIndex);
+            await this.quickSort(visualizer,timer,array, pivotIndex + 1, endIndex);
+
+            // await Promise.all([
+            //      this.quickSort(visualizer,timer,array, startIndex, pivotIndex),
+            //      this.quickSort(visualizer,timer,array, pivotIndex + 1, endIndex),
+            // ]);
+
+            timer.pause();
+            await SleepLock.sleep( () => visualizer.lock );
+            if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+            {
+                visualizer.pause();
+            }
+            timer.continue();
+
+        }
+    }
+
+    private async partitionHoare(visualizer: any,timer: Timer,array: any[],startIndex: number, endIndex: number)
+    {
+        this.prismService.highlightLines("5,18-34");
+        // if(startIndex!=0 || endIndex!= array.length-1)
+        // {
+        //     for(let i=startIndex;i<=endIndex;i++)
+        //     {
+        //         array[i].mark(this.markColorDark);
+        //     }
+        // }
+        const pivot = array[Math.floor((endIndex - startIndex) / 2) + startIndex];
+
+        let leftIndex = startIndex - 1;
+        let rightIndex = endIndex + 1;
+
+        while (true) {
+            do {
+                leftIndex += 1;
+            } while (array[leftIndex] < pivot);
+
+            do {
+                rightIndex -= 1;
+            } while (array[rightIndex] > pivot);
+
+            if (leftIndex >= rightIndex) {
+                // if(startIndex!=0 || endIndex!= array.length-1)
+                // {
+                //     for(let i=startIndex;i<=endIndex;i++)
+                //     {
+                //         array[i].unmark();
+                //     }
+                // }
+                return rightIndex;
+            }
+
+            array[rightIndex].mark(this.markColorLight);
+            array[leftIndex].mark(this.markColorLight);
+            timer.pause();
+            await visualizer.swap(rightIndex,leftIndex);
+            await SleepLock.sleep( () => visualizer.lock );
+            if(!visualizer.shouldMakNextStep && visualizer.stepByStep)
+            {
+                visualizer.pause();
+            }
+            timer.continue();
+            array[rightIndex].unmark();
+            array[leftIndex].unmark();
+        }
+    }
 }
 // export default AlgorithmImplementations.getInstance();

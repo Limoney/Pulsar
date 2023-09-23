@@ -11,4 +11,17 @@ import { bottomTop } from 'src/app/route-animations';
     ]
 })
 export class HomePageComponent {
+    playAnim(outlet: any)
+	{
+		const result = outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+		console.log("home-amim: "+ result);
+		
+		return result;
+	}
+
+    test()
+    {
+        console.log("homepage-route activated");
+        
+    }
 }

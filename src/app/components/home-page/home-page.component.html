@@ -5,7 +5,7 @@
     <div class="foreground">
         <app-navbar></app-navbar>
         <div class="page-content" [@homepageRouteAnimations]="outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation']" >
-            <router-outlet #outlet="outlet"></router-outlet>
+            <router-outlet #outlet="outlet" (activate)="test()"></router-outlet>
         </div>
     </div>
 </div>

@@ -9,7 +9,7 @@ export class AlgorithmConfigService {
 
 	public readonly algorithms;
 
-	constructor(private algorithmImplementations: AlgorithmImplementations) 
+	constructor(private algorithmImplementations: AlgorithmImplementations)
 	{
 		this.algorithms = {
 			urlPrefix: "/algorithms",
@@ -21,6 +21,7 @@ export class AlgorithmConfigService {
 					isInPlace: true,
 					dataOrderType: AlgorithmDataOrderType.Random,
 					type: AlgorithmType.Sorting,
+                    isRecursive: false,
 					sourceCode: algorithmImplementations.bubbleSortSource,
 					implementation: algorithmImplementations.bubbleSort.bind(algorithmImplementations)
 				},
@@ -30,7 +31,10 @@ export class AlgorithmConfigService {
 					timeComplexity: AlgorithmComplexity.Quadratic,
 					isInPlace: true,
 					dataOrderType: AlgorithmDataOrderType.Random,
-					type: AlgorithmType.Sorting
+					type: AlgorithmType.Sorting,
+                    isRecursive: false,
+					sourceCode: algorithmImplementations.insertionSortSource,
+					implementation: algorithmImplementations.insertionSort.bind(algorithmImplementations)
 				},
 				{
 					name: "Selection Sort",
@@ -38,7 +42,10 @@ export class AlgorithmConfigService {
 					timeComplexity: AlgorithmComplexity.Quadratic,
 					isInPlace: true,
 					dataOrderType: AlgorithmDataOrderType.Random,
-					type: AlgorithmType.Sorting
+					type: AlgorithmType.Sorting,
+                    isRecursive: false,
+					sourceCode: algorithmImplementations.selectionSortSource,
+					implementation: algorithmImplementations.selectionSort.bind(algorithmImplementations)
 				},
 				{
 					name: "Merge Sort",
@@ -47,16 +54,21 @@ export class AlgorithmConfigService {
 					isInPlace: false,
 					dataOrderType: AlgorithmDataOrderType.Random,
 					type: AlgorithmType.Sorting,
+                    isRecursive: true,
 					sourceCode: algorithmImplementations.mergeSortSource,
 					implementation: algorithmImplementations.mergeSortWrapper.bind(algorithmImplementations)
 				},
+
 				{
 					name: "Quick Sort",
 					linkName: "quick-sort",
 					timeComplexity: AlgorithmComplexity.Linearithmic,
 					isInPlace: true,
 					dataOrderType: AlgorithmDataOrderType.Random,
-					type: AlgorithmType.Sorting
+					type: AlgorithmType.Sorting,
+                    isRecursive: true,
+					sourceCode: algorithmImplementations.quickSortSource,
+					implementation: algorithmImplementations.quickSortWrapper.bind(algorithmImplementations)
 				},
 				{
 					name: "Linear Search",
@@ -65,6 +77,7 @@ export class AlgorithmConfigService {
 					isInPlace: true,
 					type: AlgorithmType.Searching,
 					dataOrderType: AlgorithmDataOrderType.Random,
+                    isRecursive: false,
 					sourceCode: algorithmImplementations.linearSearchSource,
 					implementation: algorithmImplementations.linearSearch.bind(algorithmImplementations)
 				},
@@ -75,6 +88,7 @@ export class AlgorithmConfigService {
 					isInPlace: true,
 					type: AlgorithmType.Searching,
 					dataOrderType: AlgorithmDataOrderType.Sorted,
+                    isRecursive: false,
 					sourceCode: algorithmImplementations.binarySearchSource,
 					implementation: algorithmImplementations.binarySearch.bind(algorithmImplementations)
 				},
@@ -85,9 +99,11 @@ export class AlgorithmConfigService {
 					isInPlace: true,
 					type: AlgorithmType.Searching,
 					dataOrderType: AlgorithmDataOrderType.Sorted,
+                    isRecursive: false,
 					sourceCode: algorithmImplementations.jumpSearchSource,
 					implementation: algorithmImplementations.jumpSearch.bind(algorithmImplementations)
 				},
+
 			] as AlgorithmDetails[]
 		}
 	}

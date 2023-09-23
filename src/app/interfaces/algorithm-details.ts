@@ -7,8 +7,9 @@ export interface AlgorithmDetails {
     type: AlgorithmType,
     isInPlace: boolean,
     dataOrderType: AlgorithmDataOrderType,
-    sourceCode?: string,
-    implementation?: (...args: any[]) => AlgorithmOutput,
+    isRecursive: boolean,
+    sourceCode: string,
+    implementation: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>,
 }
 
 export enum AlgorithmType

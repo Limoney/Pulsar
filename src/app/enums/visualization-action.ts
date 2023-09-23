@@ -13,5 +13,8 @@ export enum VisualizationAction {
     RESUME,
     SET_SPEED,
     SORT,
-    REROLL
+    REROLL,
+    SET_NUMBER_OF_ELEMENTS,
+    SET_MAX_ELEMENT,
+    SET_MIN_ELEMENT
 }

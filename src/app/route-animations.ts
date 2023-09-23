@@ -139,4 +139,46 @@ const tempNameSequance = [
 // TODO: add overflow: hidden to body during animation
 export const tempName = trigger('appRouteAnimations', tempNameSequance);
 
+const algorithmPageTransitionSequance = [
+	transition('* <=> *', [
+		group([
+			query(':enter', [
+				style({
+					position: 'absolute',
+					width: '100%',
+					height: '100%',
+					top: '-50%',
+					left: '-50%',
+					// transform: 'scale(0.1)',
+				}),
+			], { optional: true }),
+			query(':leave', [
+				style({	
+					position: 'absolute',
+					width: '100%',
+					height: '100%',
+					top: '0',
+					left: '0'
+				}),
+			], { optional: true }),
+		]),
+
+		group([
+			query(':leave', [
+				animate('600ms ease', style({
+					left: '100%'
+				})),
+			], { optional: true }),
+			query(':enter', [
+				animate('600ms ease', style({
+					left: '0%',
+					// top: '0%'
+				})),
+			], { optional: true }),
+		])
+	]),
+]
+
+export const algorithmPageTransition = trigger('algorithmRouteAnimations', algorithmPageTransitionSequance);
+
 // export const tempName2 = trigger('algorithmRouteAnimations', tempNameSequance);

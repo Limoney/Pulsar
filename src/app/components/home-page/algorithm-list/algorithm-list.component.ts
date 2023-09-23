@@ -5,7 +5,7 @@ import { AlgorithmDetails, AlgorithmType } from 'src/app/interfaces/algorithm-de
 import { AlgorithmConfigService } from 'src/app/services/algorithm-config.service';
 
 @Component({
-	selector: 'app-algorithms',
+	selector: 'app-algorithm-list',
 	templateUrl: './algorithm-list.component.html',
 	styleUrls: ['./algorithm-list.component.css']
 })

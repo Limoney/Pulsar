@@ -11,4 +11,10 @@ import { tempName } from './route-animations';
 })
 export class AppComponent {
   title = 'Pulsar';
+
+  test()
+  {
+    console.log("main-route activated");
+    
+  }
 }

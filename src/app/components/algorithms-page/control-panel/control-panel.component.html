@@ -102,17 +102,17 @@
         <div class="columns">
             <div class="column">
                 <span class="p-float-label">
-                    <p-inputNumber inputId="elementCnt" [min]="1" #utilityNumberOfElements></p-inputNumber>
+                    <p-inputNumber inputId="elementCnt" [(ngModel)]="numberOfElements" [min]="1" #utilityNumberOfElements></p-inputNumber>
                     <label for="elementCnt">Number of Elements</label>
                 </span>
             </div>
             <div class="column">
                 <span class="p-float-label">
-                    <p-inputNumber inputId="elementMin" #utilityMinlement></p-inputNumber>
+                    <p-inputNumber inputId="elementMin" [(ngModel)]="minNumber" #utilityMinlElement></p-inputNumber>
                     <label for="elementCnt">Smallest Element</label>
                 </span>
                 <span class="p-float-label">
-                    <p-inputNumber inputId="elementMax" #utilityMaxlement></p-inputNumber>
+                    <p-inputNumber inputId="elementMax" [(ngModel)]="maxNumber" #utilityMaxElement></p-inputNumber>
                     <label for="elementCnt">Biggest Element</label>
                 </span>
             </div>
@@ -124,10 +124,10 @@
     </p-panel>
 </div>
 <div class="navigation">
-    <button class="button is-primary is-primary-hover" (click)="prevPage()">
+    <button class="button is-primary is-primary-hover" [disabled]="algorithmIndex==0" (click)="prevPage()">
         <i class="fa-solid fa-angle-left"></i>
     </button>
-    <button class="button is-primary is-primary-hover" (click)="nextPage()">
+    <button class="button is-primary is-primary-hover" [disabled]="algorithmIndex == algorithmConfig.algorithms.list.length-1" (click)="nextPage()">
         <i class="fa-solid fa-angle-right"></i>
     </button>
     <button class="button is-primary is-primary-hover" (click)="home()">

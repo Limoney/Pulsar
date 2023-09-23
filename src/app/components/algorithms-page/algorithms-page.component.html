@@ -1,11 +1,11 @@
 <div class="page-container">
-    <p-progressSpinner *ngIf="loading"></p-progressSpinner>
-    <div class="page-content" *ngIf="!loading && currentAlgorithm">
-        <app-visualization-panel [algorithmDetails]="currentAlgorithm"></app-visualization-panel>
-        <app-control-panel [algorithmDetails]="currentAlgorithm"></app-control-panel>
+    
+    <!-- <p-progressSpinner *ngIf="loading"></p-progressSpinner> -->
+    <div class="page-content" [@algorithmRouteAnimations]="true">
+        <router-outlet #outlet="outlet" (activate)="test()"></router-outlet>
     </div>
-    <div class="error" *ngIf="!loading && !currentAlgorithm">
+    <!-- <div class="error" *ngIf="!loading && !currentAlgorithm">
         oops
-    </div>
+    </div> -->
 </div>
 <!-- https://medium.com/frontend-coach/angular-router-animations-what-they-dont-tell-you-3d2737a7f20b -->

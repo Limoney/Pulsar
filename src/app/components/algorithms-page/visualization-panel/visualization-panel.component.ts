@@ -42,11 +42,20 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	@ViewChild("output")
 	algorithmOutputElement!: ElementRef;
 
+	@ViewChild("canvasElement")
+	canvasElement!: ElementRef;
+
 	protected sketch!: p5
 
 	public canvasRef!: any;
 
 	protected visualizer!: BarVisualizer;
+
+	private numberOfElements!: number
+
+	private maxElement!: number
+
+	private minElement!: number;
 
 	private p5Subscription!: Subscription;
 
@@ -106,8 +115,9 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	}
 
 	ngAfterViewInit(): void {
+		console.log("IM NEW");
+		
 		this.p5Subscription = this.p5Service.ready().subscribe((isP5Ready) => {
-			
 			if(isP5Ready)
 			{
 				
@@ -168,14 +178,11 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	private setupCnavas()
 	{
 		this.canvasRef = this.sketch.createCanvas(this.canvasWrapperElement.nativeElement.clientWidth,
-												  this.canvasWrapperElement.nativeElement.clientHeight);
+												  this.canvasWrapperElement.nativeElement.clientHeight,this.sketch.P2D,this.canvasElement.nativeElement);
 		this.canvasRef.canvas.style.position = "absolute";
-		this.canvasRef.parent("canvas-wrapper");
 		this.onResize(null);
-		const data = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ? 
-					 this.dataGeneratorService.getSortedData(10,10,this.sketch.height) : 
-					 this.dataGeneratorService.getRandomData(10,10,this.sketch.height);
-		this.visualizer = new BarVisualizer(this.algorithmDetails.implementation,data);
+		
+		this.visualizer = new BarVisualizer(this.algorithmDetails.implementation,[]);
 		
 		this.canvasRef.canvas.addEventListener("wheel",(event:any)=>{
 			let direction = 1;
@@ -258,8 +265,8 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 				break
 			case VisualizationAction.REROLL:
 				const data = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ? 
-					 this.dataGeneratorService.getSortedData(context.data,10,this.sketch.height) : 
-					 this.dataGeneratorService.getRandomData(context.data,10,this.sketch.height);
+					 this.dataGeneratorService.getSortedData(context.data.count,context.data.min,context.data.max) : 
+					 this.dataGeneratorService.getRandomData(context.data.count,context.data.min,context.data.max);
 				this.visualizer.setData(data);
 				break
 		}

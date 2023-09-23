@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { NavbarComponent } from './components/home-page/navbar/navbar.component';
-import { RouterModule, Routes } from '@angular/router';
+import { RouteReuseStrategy, RouterModule, Routes } from '@angular/router';
 import { BackgroundWavesComponent } from './components/home-page/background-waves/background-waves.component';
 import { CreditsComponent } from './components/home-page/credits/credits.component';
 import { PanelModule } from 'primeng/panel';
@@ -32,6 +32,8 @@ import { BlockUIModule } from 'primeng/blockui';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 import 'prismjs/plugins/match-braces/prism-match-braces';
 import 'prismjs/plugins/line-highlight/prism-line-highlight';
+import { ReuseStrategy } from './interfaces/reuse-strategy';
+import { AlgorithmComponent } from './components/algorithms-page/algorithm/algorithm.component';
 // import 'prismjs/plugins/line-highlight/prism-line-highlight';
 
 
@@ -56,9 +58,13 @@ const appRoutes: Routes = [
 	{ 
 		path: 'algorithms', 
 		component: AlgorithmsPageComponent, 
-		data: { animation: "algorithms" },
+		children: [
+			// {path: '', redirectTo: '/', pathMatch: 'full'},
+			{path: ':name', component: AlgorithmComponent, data: { animation: "algorithm" }}
+		]
 	}
 ]
+//https://stackblitz.com/github/sulco/angular-router-children-animation?file=src%2Fapp%2Fapp.module.ts
 
 @NgModule({
 	declarations: [
@@ -71,6 +77,7 @@ const appRoutes: Routes = [
   		AlgorithmsPageComponent,
 		VisualizationPanelComponent,
 		ControlPanelComponent,
+  AlgorithmComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -94,7 +101,12 @@ const appRoutes: Routes = [
 		SpeedDialModule,
 		BlockUIModule
 	],
-	providers: [],
+	providers: [
+		{ 
+			provide: RouteReuseStrategy, 
+			useClass: ReuseStrategy 
+		},
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }
