@@ -5,215 +5,128 @@ import { Bar } from "./Bar";
 import { P5Service } from "src/app/services/p5.service";
 import { AlgorithmOutput } from "src/app/interfaces/algorithm-output";
 import gsap from "gsap";
+import {Visualizer} from "../visualizer";
+import {VisualizerAttributes} from "../visualizer-attributes";
+import {Animatable} from "../animatable";
+import {VisualizerCommon} from "../visualizer-common";
+import {Slice} from "../PieVisualizer/slice";
 
-export class BarVisualizer
+//screw it
+// visualizer should be abstract class, drop SimpleVisualizer
+export class BarVisualizer extends VisualizerCommon
 {
-    public bars:Bar[] = [];
-    protected lock;
-    protected stepByStep;
-    protected shouldMakeNextStep;
-    public camera;
-    private sketchRef: p5;
-    private algorithm: (...args: any[]) => AlgorithmOutput;
-    private minimumStepDuration = 10;
-    private readonly msBetweenStepsDefault = Bar.animationDuration * 1000 + this.minimumStepDuration + 2500;
-    private msBetweenSteps = this.msBetweenStepsDefault;
-    private forceQuit = false;
-    private initialData!: number[];
-    
-    constructor(algorithm: any, initialData: number[])
+    constructor(attributes: VisualizerAttributes, camera: Camera, algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>)
     {
-        this.sketchRef = new P5Service().getP5Instance();
-        this.camera = new Camera();
-        this.lock = new SleepLock(this.msBetweenSteps);
-        this.algorithm = algorithm;
-        this.stepByStep = false;
-        this.shouldMakeNextStep = false;
+        super(attributes,camera, algorithm);
+        this.sketchRef.textAlign(this.sketchRef.CENTER, this.sketchRef.BOTTOM);
+        Bar.visualizerAttributes = attributes;
         this.sketchRef.textSize(Bar.width/2);
-        this.sketchRef.textAlign(this.sketchRef.CENTER);
-        this.setData(initialData);
     }
 
-    public updateAndShow()
+    public override update(): void
     {
         this.camera.update();
-        for(let bar of this.bars)
-        {
-            if(!this.camera.isOnScreen(
-                bar.position.x + Bar.width/2,
-                bar.position.y - bar.value / 2,
-                Bar.width,
-                bar.value
-            ))
-            {
+        for(let element of this.elements) {
+            const box = element.getBoundingBox();
+            if(!this.camera.isOnScreen(box.position.x, box.position.y, box.size.x, box.size.y)) {
                 continue;
             }
-            bar.update();
-            bar.show();
+            element.update();
+            element.show();
         }
     }
 
-    public push(value: number)
+    public override push(element: Animatable): void
     {
-        let prev = this.bars[this.bars.length-1] ?? new Bar(-Bar.width,this.sketchRef.height,Bar.width,0);
-        this.bars.push(new Bar(prev.position.x + Bar.width,
-                               prev.position.y,Bar.width,
-                               value));
-        this.initialData.push(value);
+        element.setPositionWithIndex(this.elements.length);
+        this.elements.push(element);
     }
 
-    public pop()
+    public pop(): void
     {
-        this.bars.splice(this.bars.length-1,1);
-        this.initialData.splice(this.initialData.length-1,1);
+        this.elements.pop();
     }
 
-    public insert(value: number,index: number)
+    public override insert(element: Animatable,index: number)
     {
-        index = this.sketchRef.min(this.sketchRef.max(index,0),this.bars.length);
-        let prevBar = this.bars[index-1] ?? new Bar(-Bar.width,this.sketchRef.height,Bar.width,0);
-        let newBar = new Bar(prevBar.position.x + Bar.width,prevBar.position.y,Bar.width,value);
-        this.bars.splice(index, 0, newBar);
-        this.initialData.splice(index, 0, value);
+        index = this.sketchRef.min(this.sketchRef.max(index,0),this.elements.length);
+        element.setPositionWithIndex(index);
+        this.elements.splice(index, 0, element);
 
-        for(let i = index + 1; i< this.bars.length; i++)
+        for(let i = index + 1; i< this.elements.length; i++)
         {
-            this.bars[i].position.x += Bar.width;
-        };
+            this.elements[i].setPositionWithIndex(i);
+        }
     }
 
-    public remove(index: number)
+    public override remove(index: number): void
     {
-        index = this.sketchRef.min(this.sketchRef.max(index,0),this.bars.length-1);
-        this.bars.splice(index,1);
-        this.initialData.splice(index,1);
-        for(let i = index; i< this.bars.length; i++)
+        index = this.sketchRef.min(this.sketchRef.max(index,0),this.elements.length-1);
+        this.elements.splice(index,1);
+        // this.attributes.initialData.splice(index,1);
+        for(let i = index; i< this.elements.length; i++)
         {
-            this.bars[i].position.x -= Bar.width;
-        };
+            this.elements[i].setPositionWithIndex(i);
+        }
     }
 
-    public clear()
-    {
-        this.bars = [];
-        this.initialData = [];
-    }
-    
-    public restart()
+    public override restart(initialData: number[]): void
     {
         this.forceQuit = true;
-        for(let i=0;i<this.bars.length;i++)
+        for(let i=0;i<this.elements.length;i++)
         {
-            this.bars[i].fastUnmark();
-            this.bars[i].value = this.initialData[i];
-            this.bars[i].setPositionWithIndexFast(i);
+            this.elements[i].unmark(true);
+            this.elements[i].setValue(initialData[i])
+            this.elements[i].setPositionWithIndex(i);
         }
     }
 
-    public enableStepByStep()
-    {
-        this.stepByStep = true;
-        this.lock.lock();
-        console.log("on");
-    }
 
-    public disableStepByStep()
+    public override setData(values: number[]): void
     {
-        this.stepByStep = false;
-        this.lock.unlock();
-        console.log("off");
-    }
-
-    public async play(algorithmData: any)
-    {
-        this.restart();
-        this.forceQuit = false;
-        return this.algorithm(this,this.bars,algorithmData);
-    }
-
-    public resume()
-    {
-        this.shouldMakeNextStep = true;
-        this.lock.unlock();
-    }
-
-    public pause()
-    {
-        this.shouldMakeNextStep = false;
-        this.lock.lock();
-    }
-
-    public setSpeed(speedPercent: number)
-    {
-        this.msBetweenSteps = this.msBetweenStepsDefault *(100 - speedPercent)/100 + this.minimumStepDuration;
-        Bar.animationDuration = this.msBetweenSteps/1000;
-        this.lock.setSleepDuration(this.msBetweenSteps);
-    }
-
-    public setData(initialData: number[])
-    {
-        this.initialData = initialData;
-        const initialNumberOfElements = this.bars.length;
-        if(initialNumberOfElements != this.initialData.length)
+        this.elements = [];
+        for(let i = 0; i< values.length; i++)
         {
-            this.bars = [];
-            for(let i = 0; i< this.initialData.length; i++)
-            {
-                let bar = new Bar(i*Bar.width,this.sketchRef.height,Bar.width,this.initialData[i]);
-                this.bars.push(bar); 
-            }
-        }
-        else
-        {
-            for(let i = 0; i< initialNumberOfElements; i++)
-            {
-                this.bars[i].value = this.initialData[i]; 
-            }
-        }
-        
-    }
-
-    public sort()
-    {
-        this.bars = this.bars.sort(Bar.compare);
-        for(let i=0;i<this.bars.length;i++)
-        {
-            this.bars[i].position.x = Bar.width*i;
+            let bar = new Bar(i*Bar.width,this.sketchRef.height,Bar.width,values[i]);
+            this.elements.push(bar);
         }
     }
 
-    async swap(leftbarIndex: number,rightBarIndex: number): Promise<void>
-    {        
-        const leftbar = this.bars[leftbarIndex]
-        const rightBar = this.bars[rightBarIndex]
-        
-        const leftbarPos = leftbar.position.copy();
-        const rightBarPos = rightBar.position.copy();
-        
-        return new Promise<void>( (resolve) => {
-            const tl = gsap.timeline({ 
+    override async swap(leftElement: number,rightElement: number): Promise<void>
+    {
+        const left = this.elements[leftElement] as Bar;
+        const right = this.elements[rightElement] as Bar;
+
+        const leftPos = left.position.copy();
+        const rightPos = right.position.copy();
+
+        return new Promise<void>( (resolve: any): void => {
+            const tl = gsap.timeline({
                 onComplete: () => {
-                  let copy = this.bars[leftbarIndex];
-                  this.bars[leftbarIndex] = this.bars[rightBarIndex];
-                  this.bars[rightBarIndex] = copy; 
+                  let copy = this.elements[leftElement];
+                  this.elements[leftElement] = this.elements[rightElement];
+                  this.elements[rightElement] = copy;
                   resolve();
                 }
               });
-              
-              tl.to(leftbar.position, {
-                x: rightBarPos.x,
-                y: rightBarPos.y,
+
+              tl.to(left.position, {
+                x: rightPos.x,
+                y: rightPos.y,
                 ease: "power4.inOut",
-                duration: Bar.animationDuration
+                duration: Bar.visualizerAttributes.msComputedAnimationSpeed
               });
-              
-              tl.to(rightBar.position, {
-                x: leftbarPos.x,
-                y: leftbarPos.y,
+
+              tl.to(right.position, {
+                x: leftPos.x,
+                y: leftPos.y,
                 ease: "power4.inOut",
-                duration: Bar.animationDuration
+                duration: Bar.visualizerAttributes.msComputedAnimationSpeed
               },'<');
         })
-        
+    }
+
+    public override createElement(value: number): Animatable {
+        return new Bar(0,0,Bar.width,value);
     }
 }

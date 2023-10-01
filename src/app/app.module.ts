@@ -35,29 +35,30 @@ import 'prismjs/plugins/line-highlight/prism-line-highlight';
 import { ReuseStrategy } from './interfaces/reuse-strategy';
 import { AlgorithmComponent } from './components/algorithms-page/algorithm/algorithm.component';
 // import 'prismjs/plugins/line-highlight/prism-line-highlight';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 const appRoutes: Routes = [
 	{
-		path: '', 
-		component: HomePageComponent, 
+		path: '',
+		component: HomePageComponent,
 		data: { animation: 'homepage' },
 		children: [
-			{ 
-				path: 'credits', 
-				component: CreditsComponent, 
-				data: { animation: 'credits' } 
+			{
+				path: 'credits',
+				component: CreditsComponent,
+				data: { animation: 'credits' }
 			},
-			{ 
-				path: 'algorithm-list', 
-				component: AlgorithmListComponent, 
-				data: { animation: 'algorithm-list' } 
+			{
+				path: 'algorithm-list',
+				component: AlgorithmListComponent,
+				data: { animation: 'algorithm-list' }
 			}
 		]
 	},
-	{ 
-		path: 'algorithms', 
-		component: AlgorithmsPageComponent, 
+	{
+		path: 'algorithms',
+		component: AlgorithmsPageComponent,
 		children: [
 			// {path: '', redirectTo: '/', pathMatch: 'full'},
 			{path: ':name', component: AlgorithmComponent, data: { animation: "algorithm" }}
@@ -99,12 +100,13 @@ const appRoutes: Routes = [
 		InputSwitchModule,
 		StyleClassModule,
 		SpeedDialModule,
-		BlockUIModule
+		BlockUIModule,
+        DropdownModule
 	],
 	providers: [
-		{ 
-			provide: RouteReuseStrategy, 
-			useClass: ReuseStrategy 
+		{
+			provide: RouteReuseStrategy,
+			useClass: ReuseStrategy
 		},
 	],
 	bootstrap: [AppComponent]

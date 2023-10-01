@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { VisualizationAction } from '../enums/visualization-action';
 import { VisualizationContext } from '../interfaces/visualization-context';
 import { VisualizationState } from '../enums/visualization-state';
+import {VisualizerAttributes} from "../algorithms/visualizers/visualizer-attributes";
+import {VisualizerFactoryService} from "./visualizer-factory.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -13,9 +15,10 @@ export class VisualizationManagerService {
 	private actions: VisualizationContext[] = []
 	private visualizationStateSubject = new BehaviorSubject<VisualizationState>(VisualizationState.IDLE);
 	private visualizationState = this.visualizationStateSubject.asObservable();
+    private sharedVisualizerAttributes: VisualizerAttributes;
 
 	constructor() {
-
+        this.sharedVisualizerAttributes = new VisualizerAttributes("Pie",1000);
 	}
 
 	public getVisualizationState(): Observable<VisualizationState>
@@ -43,6 +46,11 @@ export class VisualizationManagerService {
 	{
 		return this.actionsSubject.asObservable();
 	}
+
+    public getAttributes()
+    {
+        return this.sharedVisualizerAttributes;
+    }
 
 
 }

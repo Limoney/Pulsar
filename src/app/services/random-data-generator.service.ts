@@ -5,20 +5,22 @@ import { Injectable } from '@angular/core';
 })
 export class RandomDataGeneratorService {
 
-	constructor() { }
+	constructor() {
+        console.log("IM NEW SERVICE");
+    }
 
-	getRandomData(amount: number, min:number, max:number) 
+	getRandomData(amount: number, min:number, max:number)
 	{
 		return Array.from(Array(amount), () => Math.floor(Math.random() * (max - min + 1)) + min)
 	}
 
-	getSortedData (amount: number, min:number, max:number) 
+	getSortedData (amount: number, min:number, max:number)
 	{
 		let data = new Array(amount)
 		let increment = (max - min) / amount;
 		let newMax = min + increment;
 		let newMin = min;
-		
+
 		for (let i = 0; i < amount; i++) {
 			const value = Math.floor(Math.random() * (newMax - newMin + 1)) + newMin
 			data[i] = value;

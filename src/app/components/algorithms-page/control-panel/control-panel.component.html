@@ -3,7 +3,7 @@
     <p-blockUI [target]="inputPanel" [blocked]="currentVisualizationState != visualizationStates.IDLE">
         <i class="pi pi-lock" style="font-size: 3rem"></i>
     </p-blockUI>
-    <p-panel class="option-group" #inputPanel>   
+    <p-panel class="option-group" #inputPanel>
         <ng-template pTemplate="header">
             <h3>Input</h3>
         </ng-template>
@@ -18,7 +18,7 @@
                     <label for="index">index</label>
                 </span>
             </div>
-            
+
             <div class="column">
                 <button class="button-flex is-primary is-primary-hover" (click)="push()">push</button>
                 <button class="button-flex is-primary is-primary-hover" (click)="pop()">pop</button>
@@ -33,9 +33,9 @@
         </div>
     </p-panel>
 
-    
+
     <p-panel class="option-group">
-        <ng-template pTemplate="header"> 
+        <ng-template pTemplate="header">
             <h3>Vizualization</h3>
         </ng-template>
         <div class="columns">
@@ -46,8 +46,8 @@
                 </span>
             </div>
             <div class="column">
-                <button class="button-flex is-primary is-primary-hover" 
-                        (click)="play()" 
+                <button class="button-flex is-primary is-primary-hover"
+                        (click)="play()"
                         [disabled]="currentVisualizationState != visualizationStates.IDLE">
                         Play
                 </button>
@@ -58,21 +58,21 @@
                     <span>Step by Step</span>
                     <p-inputSwitch (onChange)="stepByStep()" [(ngModel)]="isStepByStepEnabled"></p-inputSwitch>
                 </div>
-                <button class="button-flex is-primary is-primary-hover" 
-                        (click)="nextStep()" 
+                <button class="button-flex is-primary is-primary-hover"
+                        (click)="nextStep()"
                         [disabled]="!isStepByStepEnabled || currentVisualizationState != visualizationStates.ANIMATING_MANUAL">
                         Next Step
                 </button>
             </div>
             <div class="column">
-                <button class="button-flex is-primary is-primary-hover" 
-                        (click)="pause()" 
-                        [disabled]="currentVisualizationState != visualizationStates.ANIMATING_AUTO" 
+                <button class="button-flex is-primary is-primary-hover"
+                        (click)="pause()"
+                        [disabled]="currentVisualizationState != visualizationStates.ANIMATING_AUTO"
                         title="request stop at next available point in program">
                         Pause
                 </button>
-                <button class="button-flex is-primary is-primary-hover" 
-                        (click)="resume()" 
+                <button class="button-flex is-primary is-primary-hover"
+                        (click)="resume()"
                         [disabled]="currentVisualizationState != visualizationStates.ANIMATING_MANUAL">
                         Resume
                 </button>
@@ -80,12 +80,12 @@
             <div class="column">
                 <div class="center animation-speed">
                     <span>Animation Speed</span>
-                    <p-knob [min]="1" 
-                            [max]="100" 
-                            valueTemplate="{value}%" 
-                            [step]="1" 
+                    <p-knob [min]="1"
+                            [max]="100"
+                            valueTemplate="{value}%"
+                            [step]="1"
                             [(ngModel)]="animationSpeed"
-                            [size]="80" 
+                            [size]="80"
                             (onChange)="setSpeed()"></p-knob>
                 </div>
             </div>
@@ -119,6 +119,18 @@
             <div class="column">
                 <button class="button-flex is-primary is-primary-hover" (click)="reroll()">Reroll</button>
                 <button class="button-flex is-primary is-primary-hover" (click)="sort()">Sort</button>
+            </div>
+
+            <div class="column">
+                <div class="center">
+                    <span>hide value labes</span>
+                    <p-inputSwitch (onChange)="toggleLabels()" [(ngModel)]="hideLabels"></p-inputSwitch>
+                </div>
+                <div class="center">
+                    <span>Visualizer</span>
+                    <p-dropdown [options]="visualizerFactory.visualizerList" [(ngModel)]="selectedVisualizer" (onChange)="setVisualizer()" optionLabel="name"></p-dropdown>
+                </div>
+
             </div>
         </div>
     </p-panel>

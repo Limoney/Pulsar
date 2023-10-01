@@ -1,14 +1,15 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, Input, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import gsap from 'gsap';
-import { InputNumber } from 'primeng/inputnumber';
-import { VisualizationAction } from 'src/app/enums/visualization-action';
-import { VisualizationState } from 'src/app/enums/visualization-state';
-import { AlgorithmDetails, AlgorithmType } from 'src/app/interfaces/algorithm-details';
-import { VisualizationContext } from 'src/app/interfaces/visualization-context';
-import { AlgorithmConfigService } from 'src/app/services/algorithm-config.service';
-import { ThemeService } from 'src/app/services/theme.service';
-import { VisualizationManagerService } from 'src/app/services/visualization-manager.service';
+import {InputNumber} from 'primeng/inputnumber';
+import {VisualizationAction} from 'src/app/enums/visualization-action';
+import {VisualizationState} from 'src/app/enums/visualization-state';
+import {AlgorithmDetails, AlgorithmType} from 'src/app/interfaces/algorithm-details';
+import {VisualizationContext} from 'src/app/interfaces/visualization-context';
+import {AlgorithmConfigService} from 'src/app/services/algorithm-config.service';
+import {ThemeService} from 'src/app/services/theme.service';
+import {VisualizationManagerService} from 'src/app/services/visualization-manager.service';
+import {VisualizerFactoryService} from "../../../services/visualizer-factory.service";
 
 @Component({
 	selector: 'app-control-panel',
@@ -17,13 +18,17 @@ import { VisualizationManagerService } from 'src/app/services/visualization-mana
 })
 export class ControlPanelComponent {
 
-	protected animationSpeed: number = 30;
+	protected animationSpeed: number;
 
 	protected numberOfElements: number = 20;
-    
+
 	protected minNumber: number = 10;
 
 	protected maxNumber: number = 500;
+
+    protected selectedVisualizer: any;
+
+    protected hideLabels: boolean;
 
 	@ViewChild('inputValue')
 	protected inputValue!: InputNumber;
@@ -61,19 +66,30 @@ export class ControlPanelComponent {
 				private router: Router,
 				private route: ActivatedRoute,
 				private themeService: ThemeService,
-				protected algorithmConfig: AlgorithmConfigService)
+				protected algorithmConfig: AlgorithmConfigService,
+                protected visualizerFactory: VisualizerFactoryService)
 	{
+        this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.REROLL,{
+            count: this.numberOfElements,
+            min: this.minNumber,
+            max: this.maxNumber
+        }));
+
+        this.animationSpeed = this.visualizationManager.getAttributes().animationSpeedPercent;
+
+        const selectedName = this.visualizationManager.getAttributes().selectedVisualizer;
+        const selectedIndex = this.visualizerFactory.visualizerList.map(element => element.name).indexOf(selectedName);
+        this.selectedVisualizer = this.visualizerFactory.visualizerList[selectedIndex];
+        console.log(this.selectedVisualizer)
 		this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.SET_SPEED,this.animationSpeed));
-		this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.REROLL,{
-			count: this.numberOfElements,
-			min: this.minNumber,
-			max: this.maxNumber
-		}));
+
 
 		//this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.SET_NUMBER_OF_ELEMENTS,this.utilityNumberOfElements));
 		this.visualizationManager.getVisualizationState().subscribe(currentVisualizationState => {
 			this.currentVisualizationState = currentVisualizationState;
 		})
+
+        this.hideLabels = this.visualizationManager.getAttributes().valueLabelsHidden;
 	}
 
 	scrollNavigation(event: WheelEvent)
@@ -246,11 +262,31 @@ export class ControlPanelComponent {
 		}
 	}
 
+    public toggleLabels()
+    {
+        this.visualizationManager.getAttributes().valueLabelsHidden = this.hideLabels;
+        if(this.hideLabels)
+        {
+            //this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.HIDE_LABELS));
+        }
+        else
+        {
+            //this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.SHOW_LABELS));
+        }
+    }
+
+    protected setVisualizer()
+    {
+        console.log(this.selectedVisualizer);
+        this.visualizationManager.getAttributes().selectedVisualizer = this.selectedVisualizer.name;
+        this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.SET_VISUALIZER))
+    }
+
 	protected prevPage()
 	{
 		if(this.algorithmIndex > 0)
 		{
-			console.log("going to "+(this.algorithmIndex-1));
+            this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 			const nextAlgorithm: AlgorithmDetails = this.algorithmConfig.algorithms.list[this.algorithmIndex-1];
 			this.router.navigate([this.algorithmConfig.algorithms.urlPrefix,nextAlgorithm.linkName]);
 		}
@@ -260,8 +296,7 @@ export class ControlPanelComponent {
 	{
 		if(this.algorithmIndex < this.algorithmConfig.algorithms.list.length-1)
 		{
-			console.log("going to "+(this.algorithmIndex+1));
-
+            this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 			const nextAlgorithm: AlgorithmDetails = this.algorithmConfig.algorithms.list[this.algorithmIndex+1];
 			this.router.navigate(["/algorithms",nextAlgorithm.linkName]);
 		}
@@ -269,6 +304,7 @@ export class ControlPanelComponent {
 
 	protected home()
 	{
+        this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 		this.router.navigate(["/"]);
 	}
 

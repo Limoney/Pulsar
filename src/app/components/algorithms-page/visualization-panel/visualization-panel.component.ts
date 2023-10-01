@@ -18,6 +18,11 @@ import { BarVisualizer } from 'src/app/algorithms/visualizers/BarVisualizer/BarV
 import { Bar } from 'src/app/algorithms/visualizers/BarVisualizer/Bar';
 import { AlgorithmOutput } from 'src/app/interfaces/algorithm-output';
 import { PrismService } from 'src/app/services/prism.service';
+import {VisualizerAttributes} from "../../../algorithms/visualizers/visualizer-attributes";
+import {PieVisualizer} from "../../../algorithms/visualizers/PieVisualizer/PieVisualizer";
+import {Visualizer} from "../../../algorithms/visualizers/visualizer";
+import {VisualizerFactoryService} from "../../../services/visualizer-factory.service";
+import {Camera} from "../../../algorithms/utility/Camera";
 
 
 @Component({
@@ -49,7 +54,7 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	public canvasRef!: any;
 
-	protected visualizer!: BarVisualizer;
+	protected visualizer!: Visualizer;
 
 	private numberOfElements!: number
 
@@ -69,46 +74,58 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	canvasActions: MenuItem[] = [];
 
-	constructor(private dataGeneratorService: RandomDataGeneratorService, 
+    private visualizerAttributes: VisualizerAttributes;
+
+    private selectedVisualizerType!: any;
+
+    private camera!: Camera;
+
+    private visualizationData: number[] = [];
+
+	constructor(private dataGeneratorService: RandomDataGeneratorService,
 				private p5Service: P5Service,
 				private visualizationManager: VisualizationManagerService,
 				private themeService: ThemeService,
-				private prismService: PrismService)
+				private prismService: PrismService,
+                private visualizerFactory: VisualizerFactoryService)
 	{
 		this.backgroundColor = themeService.getColor("surface-b");
 		Bar.defaultFillColor = themeService.getColor("primary-color");
 		Bar.defaultStrokeColor = themeService.getColor("primary-600");
+        this.visualizerAttributes = this.visualizationManager.getAttributes();
 	}
 
 	ngOnInit(): void {
-		
+
+
+
 		//prevent dial from closing after selecting one of the options
 		SpeedDial.prototype.onItemClick = function (e: MouseEvent, item: MenuItem) {
 			if (item.command) {
 				item.command({ originalEvent: e, item });
 			}
 			this.isItemClicked = true;
-		
+
 		};
 		this.canvasActions = [
             {
                 icon: 'pi pi-search-plus',
                 command: () => {
-					this.visualizer.camera.zoomAtPoint(this.sketch.createVector(this.sketch.width/2,this.sketch.height/2),
-													   1 + this.visualizer.camera.zoomSpeed);
+					this.camera.zoomAtPoint(this.sketch.createVector(this.sketch.width/2,this.sketch.height/2),
+													   1 + this.camera.zoomSpeed);
                 }
             },
             {
                 icon: 'pi pi-search-minus',
                 command: () => {
-					this.visualizer.camera.zoomAtPoint(this.sketch.createVector(this.sketch.width/2,this.sketch.height/2),
-													   1 - this.visualizer.camera.zoomSpeed);
+					this.camera.zoomAtPoint(this.sketch.createVector(this.sketch.width/2,this.sketch.height/2),
+													   1 - this.camera.zoomSpeed);
                 }
             },
             {
                 icon: 'pi pi-undo',
                 command: () => {
-                   this.visualizer.camera.reset();
+                   this.camera.reset();
                 }
             },
         ];
@@ -116,18 +133,23 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	ngAfterViewInit(): void {
 		console.log("IM NEW");
-		
+
 		this.p5Subscription = this.p5Service.ready().subscribe((isP5Ready) => {
 			if(isP5Ready)
 			{
-				
+                this.camera = new Camera();
+                this.visualizer = this.visualizerFactory.create(this.visualizationManager.getAttributes().selectedVisualizer,
+                    this.camera,
+                    this.algorithmDetails.implementation,
+                    this.visualizationData);
+
 				this.sketch = this.p5Service.getP5Instance();
 				this.setupCnavas();
 				this.sketch.draw = this.drawCanvas.bind(this);
 				const boundHandleActions = this.handleUIAction.bind(this);
 				this.actionSubscription = this.visualizationManager.getActions().subscribe((actions) => {
 					this.visualizationManager.softClear();
-					
+
 					for(const action of actions)
 					{
 						boundHandleActions(action);
@@ -135,13 +157,13 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 				});
 			}
 		})
-		
+
 		// https://techincent.com/code-syntax-highlighter-angular-with-prism-js/
 		this.prismSubscription = this.prismService.getHighlightedLines().subscribe((lines) => {
 			this.preElement.nativeElement.dataset.line = lines;
 			Prism.highlightElement(this.algorithmCodeElement.nativeElement);
 		})
-		
+
 	}
 
 	ngOnDestroy(): void {
@@ -181,68 +203,72 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 												  this.canvasWrapperElement.nativeElement.clientHeight,this.sketch.P2D,this.canvasElement.nativeElement);
 		this.canvasRef.canvas.style.position = "absolute";
 		this.onResize(null);
-		
-		this.visualizer = new BarVisualizer(this.algorithmDetails.implementation,[]);
-		
+
 		this.canvasRef.canvas.addEventListener("wheel",(event:any)=>{
 			let direction = 1;
 			if(event.deltaY < 0)
-				direction+=this.visualizer.camera.zoomSpeed;
+				direction+=this.camera.zoomSpeed;
 			else
-				direction+=-this.visualizer.camera.zoomSpeed;
-	
-			this.visualizer.camera.zoom(direction);
+				direction+=-this.camera.zoomSpeed;
+
+			this.camera.zoom(direction);
 		})
-		
+
 		let hammer = new Hammer(this.canvasRef.canvas);
 
 		hammer.on('panstart', (event: any) => {
-			this.visualizer.camera.onMoveStart(event.center.x,event.center.y)
+			this.camera.onMoveStart(event.center.x,event.center.y)
 		});
-		
+
 		hammer.on('panend', (event: any) => {
-			this.visualizer.camera.onMoveEnd(event.center.x,event.center.y)
+			this.camera.onMoveEnd(event.center.x,event.center.y)
 		});
 
 		hammer.on('panmove', (event: any) => {
-			this.visualizer.camera.onMove(event.center.x,event.center.y);
+			this.camera.onMove(event.center.x,event.center.y);
 		});
 	}
 
 	private drawCanvas()
 	{
 		this.sketch.background(this.backgroundColor);
-		this.visualizer.updateAndShow();
+		this.visualizer?.update();
 	}
 
-	private async handleUIAction(context: VisualizationContext)
+	private async handleUIAction(context: VisualizationContext): Promise<void>
 	{
-		console.log("recived "+ VisualizationAction[context.action]);
+		console.log("received "+ VisualizationAction[context.action]);
 		switch(context.action)
 		{
 			case VisualizationAction.PUSH:
-				this.visualizer.push(context.data);
+				this.visualizer.push(this.visualizer.createElement(context.data));
+                this.visualizationData.push(context.data)
 				break
 			case VisualizationAction.POP:
 				this.visualizer.pop();
+                this.visualizationData.pop();
 				break
 			case VisualizationAction.INSERT:
-				this.visualizer.insert(context.data.value,context.data.index);
+				this.visualizer.insert(this.visualizer.createElement(context.data.value),context.data.index);
+                this.visualizationData.splice(context.data.index, 0, context.data.value);
 				break
 			case VisualizationAction.REMOVE:
 				this.visualizer.remove(context.data);
+                this.visualizationData.splice(context.data.index,1);
 				break
 			case VisualizationAction.CLEAR:
 				this.visualizer.clear();
+                this.visualizationData = [];
 				break
 			case VisualizationAction.PLAY:
+                this.visualizer.restart(this.visualizationData);
 				this.algorithmOutput = await this.visualizer.play(context.data);
 				this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 				this.flashOutput();
 				this.prismService.highlightLines("");
 				break
 			case VisualizationAction.RESTART:
-				this.visualizer.restart();
+				this.visualizer.restart(this.visualizationData);
 				break
 			case VisualizationAction.ENABLE_STEP_BY_STEP:
 				this.visualizer.enableStepByStep();
@@ -262,14 +288,25 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 				break
 			case VisualizationAction.SORT:
 				this.visualizer.sort();
+                this.visualizationData.sort( (a,b) => a-b);
 				break
 			case VisualizationAction.REROLL:
-				const data = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ? 
-					 this.dataGeneratorService.getSortedData(context.data.count,context.data.min,context.data.max) : 
-					 this.dataGeneratorService.getRandomData(context.data.count,context.data.min,context.data.max);
-				this.visualizer.setData(data);
+				this.visualizationData = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ?
+                                         this.dataGeneratorService.getSortedData(context.data.count,context.data.min,context.data.max) :
+                                         this.dataGeneratorService.getRandomData(context.data.count,context.data.min,context.data.max);
+                if(this.visualizer)
+                {
+                    this.visualizer.setData(this.visualizationData);
+                }
 				break
-		}
+            case VisualizationAction.SET_VISUALIZER:
+                this.camera = new Camera();
+                this.visualizer = this.visualizerFactory.create(this.visualizationManager.getAttributes().selectedVisualizer,
+                                                                this.camera,
+                                                                this.algorithmDetails.implementation,
+                                                                this.visualizationData);
+                break;
+        }
 	}
 
 	private flashOutput()
