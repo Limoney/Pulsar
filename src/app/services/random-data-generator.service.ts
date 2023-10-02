@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 export class RandomDataGeneratorService {
 
 	constructor() {
-        console.log("IM NEW SERVICE");
+
     }
 
 	getRandomData(amount: number, min:number, max:number)

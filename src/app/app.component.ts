@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { tempName } from './route-animations';
+import { appPagesTransition } from './route-animations';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   animations: [
-    tempName
+    appPagesTransition
   ]
 })
 export class AppComponent {
@@ -15,6 +15,6 @@ export class AppComponent {
   test()
   {
     console.log("main-route activated");
-    
+
   }
 }

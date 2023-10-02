@@ -132,29 +132,30 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	}
 
 	ngAfterViewInit(): void {
-		console.log("IM NEW");
-
 		this.p5Subscription = this.p5Service.ready().subscribe((isP5Ready) => {
 			if(isP5Ready)
 			{
-                this.camera = new Camera();
-                this.visualizer = this.visualizerFactory.create(this.visualizationManager.getAttributes().selectedVisualizer,
-                    this.camera,
-                    this.algorithmDetails.implementation,
-                    this.visualizationData);
 
-				this.sketch = this.p5Service.getP5Instance();
-				this.setupCnavas();
-				this.sketch.draw = this.drawCanvas.bind(this);
-				const boundHandleActions = this.handleUIAction.bind(this);
-				this.actionSubscription = this.visualizationManager.getActions().subscribe((actions) => {
-					this.visualizationManager.softClear();
+                setTimeout(() => {
+                    this.camera = new Camera();
+                    this.visualizer = this.visualizerFactory.create(this.visualizationManager.getAttributes().selectedVisualizer,
+                        this.camera,
+                        this.algorithmDetails.implementation,
+                        this.visualizationData);
 
-					for(const action of actions)
-					{
-						boundHandleActions(action);
-					}
-				});
+                    this.sketch = this.p5Service.getP5Instance();
+                    this.setupCanvas();
+                    this.sketch.draw = this.drawCanvas.bind(this);
+                    const boundHandleActions = this.handleUIAction.bind(this);
+                    this.actionSubscription = this.visualizationManager.getActions().subscribe((actions) => {
+                        this.visualizationManager.softClear();
+
+                        for(const action of actions)
+                        {
+                            boundHandleActions(action);
+                        }
+                    });
+                },0);
 			}
 		})
 
@@ -163,7 +164,6 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 			this.preElement.nativeElement.dataset.line = lines;
 			Prism.highlightElement(this.algorithmCodeElement.nativeElement);
 		})
-
 	}
 
 	ngOnDestroy(): void {
@@ -171,11 +171,11 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 		this.p5Subscription.unsubscribe();
 		this.prismSubscription.unsubscribe();
 		this.actionSubscription.unsubscribe();
-		console.log("destroyed");
 	}
 
 	@HostListener('window:resize', ['$event'])
-	onResize(event: any) {
+	onResize(event?: any) {
+        console.log("size res: " + this.canvasWrapperElement.nativeElement.clientWidth +" " + this.canvasWrapperElement.nativeElement.clientHeight);
 		this.sketch.resizeCanvas(this.canvasWrapperElement.nativeElement.clientWidth, this.canvasWrapperElement.nativeElement.clientHeight);
 	}
 
@@ -185,7 +185,7 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 			duration: 0.5,
 			ease: "power4.inOut"
 		})
-		this.onResize(null);
+		this.onResize();
 	}
 
 	onPanelResizeEnd(event: any) {
@@ -194,15 +194,17 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 			duration: 0.5,
 			ease: "power4.inOut"
 		})
-		this.onResize(null);
+		this.onResize();
 	}
 
-	private setupCnavas()
+	private setupCanvas()
 	{
 		this.canvasRef = this.sketch.createCanvas(this.canvasWrapperElement.nativeElement.clientWidth,
 												  this.canvasWrapperElement.nativeElement.clientHeight,this.sketch.P2D,this.canvasElement.nativeElement);
 		this.canvasRef.canvas.style.position = "absolute";
-		this.onResize(null);
+		//this.onResize(null);
+
+        console.log("size: " + this.canvasWrapperElement.nativeElement.clientWidth +" " + this.canvasWrapperElement.nativeElement.clientHeight);
 
 		this.canvasRef.canvas.addEventListener("wheel",(event:any)=>{
 			let direction = 1;
@@ -237,7 +239,7 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	private async handleUIAction(context: VisualizationContext): Promise<void>
 	{
-		console.log("received "+ VisualizationAction[context.action]);
+		//console.log("received "+ VisualizationAction[context.action]);
 		switch(context.action)
 		{
 			case VisualizationAction.PUSH:

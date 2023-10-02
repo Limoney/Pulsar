@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, RouterOutlet} from '@angular/router';
 import { AlgorithmDetails, AlgorithmType } from 'src/app/interfaces/algorithm-details';
 import { algorithmPageTransition } from 'src/app/route-animations';
 import { AlgorithmConfigService } from 'src/app/services/algorithm-config.service';
 import { Environment } from 'src/environments/environment';
+import {ReplaySubject} from "rxjs";
 
 @Component({
 	selector: 'app-algorithms',
@@ -19,7 +20,7 @@ export class AlgorithmsPageComponent implements OnInit {
 	protected currentAlgorithm?: AlgorithmDetails;
 	protected currentAlgorithmIndex: number = 0;
 
-	constructor(private route: ActivatedRoute, private algorithmConfig: AlgorithmConfigService) { 
+	constructor(private route: ActivatedRoute, private algorithmConfig: AlgorithmConfigService) {
 
 	}
 
@@ -34,17 +35,18 @@ export class AlgorithmsPageComponent implements OnInit {
 			this.loading = false;
 		});
 	}
-	playAnim(outlet: any)
-	{
-		const result = outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
-		console.log("algo-amim: "+ result);
-		
-		return result;
-	}
+
+    // playAnim(outlet: RouterOutlet)
+    // {
+    //     const result = outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+    //     console.log("algo-amim: "+ result);
+    //
+    //     return result;
+    // }
 
 	test()
 	{
 		console.log("algo-router activated");
-		
+
 	}
 }

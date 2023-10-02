@@ -18,9 +18,12 @@ export class BarVisualizer extends VisualizerCommon
     constructor(attributes: VisualizerAttributes, camera: Camera, algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>)
     {
         super(attributes,camera, algorithm);
-        this.sketchRef.textAlign(this.sketchRef.CENTER, this.sketchRef.BOTTOM);
+        setTimeout(() => {
+            this.sketchRef.textSize(Bar.width*0.4);
+            this.sketchRef.textAlign(this.sketchRef.CENTER, this.sketchRef.BOTTOM);
+        },0)
         Bar.visualizerAttributes = attributes;
-        this.sketchRef.textSize(Bar.width/2);
+
     }
 
     public override update(): void

@@ -47,12 +47,12 @@ const appRoutes: Routes = [
 			{
 				path: 'credits',
 				component: CreditsComponent,
-				data: { animation: 'credits' }
+				// data: { animation: 'credits' }
 			},
 			{
 				path: 'algorithm-list',
 				component: AlgorithmListComponent,
-				data: { animation: 'algorithm-list' }
+				// data: { animation: 'algorithm-list' }
 			}
 		]
 	},
@@ -60,8 +60,17 @@ const appRoutes: Routes = [
 		path: 'algorithms',
 		component: AlgorithmsPageComponent,
 		children: [
-			// {path: '', redirectTo: '/', pathMatch: 'full'},
-			{path: ':name', component: AlgorithmComponent, data: { animation: "algorithm" }}
+			{path: ':name', component: AlgorithmComponent},
+            // {
+            //     path: 'linear-search',
+            //     component: AlgorithmComponent,
+            //     data: { animation: 'ls' }
+            // },
+            // {
+            //     path: 'binary-search',
+            //     component: AlgorithmComponent,
+            //     data: { animation: 'bs' }
+            // }
 		]
 	}
 ]

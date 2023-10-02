@@ -1,11 +1,8 @@
 <div class="page-container">
-    
-    <!-- <p-progressSpinner *ngIf="loading"></p-progressSpinner> -->
-    <div class="page-content" [@algorithmRouteAnimations]="true">
+    <div class="page-content" [@algorithmRouteAnimations]="outlet && outlet.activatedRouteData">
         <router-outlet #outlet="outlet" (activate)="test()"></router-outlet>
     </div>
-    <!-- <div class="error" *ngIf="!loading && !currentAlgorithm">
-        oops
-    </div> -->
+<!--        <button class="button-flex is-primary is-primary-hover" [routerLink]="['/algorithms','binary-search']"> <- </button>-->
+<!--        <button class="button-flex is-primary is-primary-hover" [routerLink]="['/algorithms','linear-search']"> -></button>-->
 </div>
 <!-- https://medium.com/frontend-coach/angular-router-animations-what-they-dont-tell-you-3d2737a7f20b -->

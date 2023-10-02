@@ -180,11 +180,9 @@ export class PieVisualizer extends VisualizerCommon
     private updateFontSize()
     {
         const screenSizeFactor = this.sketchRef.map(this.sketchRef.windowWidth,0,1920,0.1,1);
-        console.log(screenSizeFactor);
         let fontSize = this.sketchRef.map(this.elements.length,0,100,this.minFontSize * screenSizeFactor,this.maxFontSize * screenSizeFactor);
         fontSize = this.maxFontSize*screenSizeFactor - Math.max(Math.min(fontSize,this.maxFontSize*screenSizeFactor-this.minFontSize*screenSizeFactor),this.minFontSize*screenSizeFactor);
         Slice.labelSize = fontSize;
-        console.log("current font Size:" + fontSize);
         this.sketchRef.textSize(Slice.labelSize);
     }
     private updateElementsLength(modifiedElement: Slice, operation: 'add' | 'rem')

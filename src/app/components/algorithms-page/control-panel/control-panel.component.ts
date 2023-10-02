@@ -80,7 +80,7 @@ export class ControlPanelComponent {
         const selectedName = this.visualizationManager.getAttributes().selectedVisualizer;
         const selectedIndex = this.visualizerFactory.visualizerList.map(element => element.name).indexOf(selectedName);
         this.selectedVisualizer = this.visualizerFactory.visualizerList[selectedIndex];
-        console.log(this.selectedVisualizer)
+
 		this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.SET_SPEED,this.animationSpeed));
 
 
@@ -277,7 +277,6 @@ export class ControlPanelComponent {
 
     protected setVisualizer()
     {
-        console.log(this.selectedVisualizer);
         this.visualizationManager.getAttributes().selectedVisualizer = this.selectedVisualizer.name;
         this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.SET_VISUALIZER))
     }
