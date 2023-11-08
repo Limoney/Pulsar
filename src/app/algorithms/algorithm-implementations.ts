@@ -38,9 +38,9 @@ export class AlgorithmImplementations
         }
     }
 
-    static getInstance() {
-
-      return this.instance;
+    static getInstance() 
+    {
+        return this.instance;
     }
 
     public readonly binarySearchSource = `
@@ -63,11 +63,12 @@ export class AlgorithmImplementations
     }
     `;
 
-    async binarySearch(visualizer: Visualizer, array: Animatable[], value: number) {
+    async binarySearch(visualizer: Visualizer, array: Animatable[], value: number) 
+    {
         let start = 0;
         let end = array.length-1;
-        const timer = new Timer();
         this.prismService.highlightLines("7-17");
+        const timer = new Timer();
         while(start <= end)
         {
             if(visualizer.hasRequestedForceQuit())
@@ -78,17 +79,16 @@ export class AlgorithmImplementations
             }
 
             let center = Math.floor((start + end) / 2);
-
-
             let startPoint = start;
             let endPoint = end;
 
+            timer.pause();
             await Promise.all([
                 array[startPoint].mark(this.markColorLight),
                 array[endPoint].mark(this.markColorLight),
                 array[center].mark(this.markColorDark),
             ])
-
+            timer.continue();
 
             if(value > array[center].valueOf())
                 start = center + 1;
@@ -97,25 +97,27 @@ export class AlgorithmImplementations
             else
             {
 
+                timer.pause();
                 await Promise.all([
                     array[startPoint].unmark(),
                     array[endPoint].unmark(),
                     array[center].unmark(),
                 ])
+                timer.continue();
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            center,
                                            this.valueFoundMessage + center);
             }
+
             timer.pause();
             await SleepLock.sleep( () => visualizer.getLock() );
-            timer.continue();
-            visualizer.step()
+            visualizer.step();
             await Promise.all([
                 array[startPoint].unmark(),
                 array[endPoint].unmark(),
                 array[center].unmark(),
             ])
-
+            timer.continue();
         }
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            -1,
@@ -137,9 +139,9 @@ export class AlgorithmImplementations
     `;
 
     async linearSearch(visualizer: Visualizer, array: Animatable[], value: number) {
+        this.prismService.highlightLines("5-11");
         const timer = new Timer();
 
-        this.prismService.highlightLines("5-11");
         for(let i = 0; i < array.length ;i++)
         {
             if(visualizer.hasRequestedForceQuit())
@@ -149,18 +151,22 @@ export class AlgorithmImplementations
                                           this.forcefullyTerminatedMessage);
             }
 
+            timer.pause();
             await array[i].mark(this.markColorLight);
+            timer.continue();
+
             if(array[i].valueOf() == value)
             {
                 return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            i,
                                            this.valueFoundMessage + i);
             }
+
             timer.pause();
             await SleepLock.sleep( () => visualizer.getLock() );
-            timer.continue();
             visualizer.step()
             await array[i].unmark()
+            timer.continue();
         }
 
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
@@ -203,11 +209,12 @@ export class AlgorithmImplementations
 
     async jumpSearch(visualizer: Visualizer, array: Animatable[], value: number)
     {
+        this.prismService.highlightLines("8-14");
         const timer = new Timer();
         let currentIndex = 0;
         const initialStep = Math.floor(Math.sqrt(array.length));
         let step = initialStep;
-        this.prismService.highlightLines("8-14");
+
         while(array[Math.min(step,array.length)-1].valueOf() < value)
         {
             if(visualizer.hasRequestedForceQuit())
@@ -224,12 +231,12 @@ export class AlgorithmImplementations
                                            -1,
                                            this.valueNotFoundMessage);
             }
-            await array[currentIndex].mark(this.markColorDark);
 
             timer.pause();
+            await array[currentIndex].mark(this.markColorDark);
             await SleepLock.sleep( () => visualizer.getLock() );
-            timer.continue();
             visualizer.step()
+            timer.continue();
             // array[currentIndex].unmark();
         }
 
@@ -250,18 +257,20 @@ export class AlgorithmImplementations
                                            this.valueNotFoundMessage);
             }
 
-            await array[currentIndex].mark(this.markColorLight);
             timer.pause();
+            await array[currentIndex].mark(this.markColorLight);
             await SleepLock.sleep( () => visualizer.getLock() );
-            timer.continue();
-            visualizer.step()
+            visualizer.step();
             await array[currentIndex].unmark();
+            timer.continue();
         }
 
         this.prismService.highlightLines("23-30");
         if(array[currentIndex].valueOf() == value)
         {
+            timer.pause();
             await array[currentIndex].mark(this.markColorLight);
+            timer.continue();
             return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                            currentIndex,
                                            this.valueFoundMessage + currentIndex);
@@ -294,8 +303,8 @@ export class AlgorithmImplementations
     `
     public async bubbleSort(visualizer: Visualizer, array: any[])
     {
-        const timer = new Timer();
         this.prismService.highlightLines("6-17");
+        const timer = new Timer();
         let remainingElements = array.length;
         do {
             for(let i = 0; i<remainingElements - 1; i++)
@@ -308,7 +317,6 @@ export class AlgorithmImplementations
                 }
 
                 timer.pause();
-
                 await Promise.all([
                     array[i].mark(this.markColorLight),
                     array[i+1].mark(this.markColorLight),
@@ -431,7 +439,7 @@ export class AlgorithmImplementations
         await Promise.all([
                 ...leftArrayUnsorted.map(elem => elem.mark(this.markColorLight)),
                 ...rightArrayUnsorted.map(elem => elem.mark(this.markColorLight)),
-            ]);
+        ]);
 
 
         await SleepLock.sleep( () => visualizer.getLock() );
@@ -558,19 +566,19 @@ export class AlgorithmImplementations
     `
     public async insertionSort(visualizer: Visualizer, array: any[])
     {
-        const timer = new Timer();
         this.prismService.highlightLines("5-15");
+        const timer = new Timer();
         for(let i= 0; i < array.length; i++)
         {
-            let currentElement = array[i];
-            await array[i].mark(this.markColorDark);
-            let j = i-1
-            let swapped = []
-
             timer.pause();
+            await array[i].mark(this.markColorDark);
             await SleepLock.sleep( () => visualizer.getLock() );
             visualizer.step()
             timer.continue();
+
+            let currentElement = array[i];
+            let j = i-1
+            let swapped = []
 
             while(j >= 0 && array[j] > currentElement)
             {
@@ -581,8 +589,12 @@ export class AlgorithmImplementations
                                                this.forcefullyTerminatedMessage);
                 }
                 // array[j+1] = array[j];
+                timer.pause()
                 await array[j].mark(this.markColorLight);
+                timer.continue()
+
                 swapped.push(j);
+
                 timer.pause();
                 await visualizer.swap(j,j+1)
                 j--;
@@ -592,10 +604,12 @@ export class AlgorithmImplementations
                 timer.continue();
             }
             // array[j+1] = currentElement;
+            timer.pause();
             await Promise.all([
                 ...swapped.map((index) => array[index].unmark()),
                 array[i].unmark()
             ]);
+            timer.continue();
         }
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                                null,
@@ -637,9 +651,11 @@ export class AlgorithmImplementations
                                             null,
                                             this.forcefullyTerminatedMessage);
             }
-
+            
+            timer.pause();
             this.prismService.highlightLines("7-14");
             await array[i].mark(this.markColorDark);
+            timer.continue();
             let smallestElementIndex = i;
             for(let j=i+1; j<array.length; j++)
             {
@@ -650,9 +666,8 @@ export class AlgorithmImplementations
                                                this.forcefullyTerminatedMessage);
                 }
 
-                await array[j].mark(this.markColorLight);
-
                 timer.pause();
+                await array[j].mark(this.markColorLight);
                 await SleepLock.sleep( () => visualizer.getLock() );
                 visualizer.step();
                 timer.continue();
@@ -661,7 +676,9 @@ export class AlgorithmImplementations
                 {
                     smallestElementIndex = j;
                 }
+                timer.pause();
                 await array[j].unmark();
+                timer.continue();
             }
 
             this.prismService.highlightLines("16-21");
@@ -724,13 +741,14 @@ export class AlgorithmImplementations
 
     public async quickSortWrapper(visualizer: Visualizer, array: any[])
     {
-        const timer = new Timer();
         this.prismService.highlightLines("4-9");
+        const timer = new Timer();
         timer.pause();
         await SleepLock.sleep( () => visualizer.getLock() );
         visualizer.step()
         timer.continue();
         const output = await this.quickSort(visualizer,timer,array,0,array.length-1);
+        
         return new AlgorithmOutput(new Date(timer.getElapsedTime()),
                                                null,
                                                "done");
@@ -752,14 +770,14 @@ export class AlgorithmImplementations
             {
                 return;
             }
-            await array[pivotIndex].mark(this.markColorDark);
-            this.prismService.highlightLines("7-8");
 
             timer.pause();
+            await array[pivotIndex].mark(this.markColorDark);
+            this.prismService.highlightLines("7-8");
             await SleepLock.sleep( () => visualizer.getLock() );
             visualizer.step()
             await array[pivotIndex].unmark();
-            timer.continue();
+            
 
             await this.quickSort(visualizer,timer,array, startIndex, pivotIndex);
             await this.quickSort(visualizer,timer,array, pivotIndex + 1, endIndex);
@@ -769,7 +787,7 @@ export class AlgorithmImplementations
             //      this.quickSort(visualizer,timer,array, pivotIndex + 1, endIndex),
             // ]);
 
-            timer.pause();
+            
             await SleepLock.sleep( () => visualizer.getLock() );
             visualizer.step()
             timer.continue();

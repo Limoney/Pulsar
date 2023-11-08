@@ -1,0 +1,4 @@
+store current visualizer between pages/speed, hidden labels - done kinda? maybe min,max,elem count
+fix label sizes - done kinda?
+FIX ROUTE ANIMS home <-> menu
+add screen scale service

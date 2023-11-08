@@ -75,7 +75,7 @@ export class BarVisualizer extends VisualizerCommon
 
     public override restart(initialData: number[]): void
     {
-        this.forceQuit = true;
+        this.attributes.forceQuit = true;
         for(let i=0;i<this.elements.length;i++)
         {
             this.elements[i].unmark(true);

@@ -18,7 +18,7 @@ export class VisualizationManagerService {
     private sharedVisualizerAttributes: VisualizerAttributes;
 
 	constructor() {
-        this.sharedVisualizerAttributes = new VisualizerAttributes("Pie",1000);
+        this.sharedVisualizerAttributes = new VisualizerAttributes("Bar",1000);
 	}
 
 	public getVisualizationState(): Observable<VisualizationState>

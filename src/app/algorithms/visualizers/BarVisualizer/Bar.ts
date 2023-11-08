@@ -42,7 +42,7 @@ export class Bar implements Animatable
         {
             this.sketch.fill(255);
             this.sketch.noStroke();
-            this.sketch.text(this.value,this.position.x + Bar.width*0.5,this.sketch.height-this.value);
+            this.sketch.text(this.value,this.position.x + Bar.width*0.5,this.position.y-this.value);
         }
     }
 

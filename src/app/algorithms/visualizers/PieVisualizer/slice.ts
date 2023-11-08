@@ -9,7 +9,7 @@ export class Slice implements Animatable
     public static defaultFillColor = "#eeeeee";
     public static defaultStrokeColor = "#a9a9a9";
     public static angleLength = 90;
-    public static defaultBodyLength = 1;
+    public static bodyLength = 100;
     public static labelSize = 10;
     public static visualizerAttributes: VisualizerAttributes;
     public static readonly colors = [
@@ -32,6 +32,7 @@ export class Slice implements Animatable
     private sketch: p5;
     private value: number;
     public distanceFromCenter = 0;
+    private isMarked: boolean = false;
 
     constructor(value: number,angle: number, radius: number, position: p5.Vector) {
         this.sketch = new P5Service().getP5Instance();
@@ -49,10 +50,9 @@ export class Slice implements Animatable
 
     }
     show(): void {
-        // console.log(this.fillColor);
         this.sketch.fill(this.fillColor);
-        this.sketch.stroke(this.strokeColor);
-        this.sketch.strokeWeight(this.strokeSize)
+        this.sketch.noStroke();
+        
         let x1 = this.sketch.cos(this.angle) * this.radius ;
         let y1 = this.sketch.sin(this.angle) * this.radius ;
 
@@ -60,32 +60,41 @@ export class Slice implements Animatable
         let y2 = this.sketch.sin(this.angle + Slice.angleLength) * this.radius ;
 
         const offset = this.sketch.createVector(x1+x2,y1+y2).setMag(this.distanceFromCenter);
-        // this.sketch.text(this.value, 0,0)
+
         this.sketch.triangle(offset.x,
                              offset.y,
                           x1 + offset.x,
                           y1 + offset.y,
                           x2 + offset.x,
                           y2 + offset.y);
+        
+        let sliceTopCenter = this.sketch.createVector((x1+x2)/2,(y1+y2)/2);
+        if(this.isMarked)
+        {
+            this.sketch.fill(this.strokeColor);
+            this.sketch.stroke("#eeeeee");
+            this.sketch.strokeWeight(this.strokeSize);
+            this.sketch.circle(sliceTopCenter.x*0.9 + offset.x,sliceTopCenter.y*0.9 + offset.y,Slice.labelSize);
+        }
 
         if(!Slice.visualizerAttributes.valueLabelsHidden)
         {
             this.sketch.noStroke();
             this.sketch.fill("#eeeeee");
-            let textPosition = this.sketch.createVector((x1+x2)/2,(y1+y2)/2);
-            textPosition.add(textPosition.copy().setMag(Slice.labelSize));
-            this.sketch.text(this.value, textPosition.x + offset.x,textPosition.y + offset.y)
+            sliceTopCenter.add(sliceTopCenter.copy().setMag(Slice.labelSize));
+            this.sketch.text(this.value, sliceTopCenter.x + offset.x,sliceTopCenter.y + offset.y)
         }
         // this.sketch.text(this.value, 0,0,)
     }
+
     async mark(color: string): Promise<void>  {
         return new Promise<void>( resolve => {
             this.prevFillColor = this.fillColor;
             this.prevStrokeColor = this.strokeColor;
+            this.isMarked = true;
             gsap.to(this,{
                 fillColor: this.prevFillColor + "cc",
                 strokeColor: color,
-                strokeSize: 5,
                 ease: "power2.inOut",
                 duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
                 onComplete: () =>{
@@ -94,6 +103,7 @@ export class Slice implements Animatable
             })
         })
     }
+    
     unmark(disableAnimation?: boolean): Promise<void> {
         //TODO: not to default colors
         return new Promise<void>(resolve => {
@@ -105,6 +115,7 @@ export class Slice implements Animatable
                     ease: "power2.inOut",
                     duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
                     onComplete: () =>{
+                        this.isMarked = false;
                         resolve();
                     }
                 })
@@ -113,6 +124,7 @@ export class Slice implements Animatable
             {
                 this.fillColor = this.prevFillColor;
                 this.strokeColor = this.prevStrokeColor;
+                this.isMarked = false;
                 resolve();
             }
         })
@@ -135,17 +147,7 @@ export class Slice implements Animatable
     setPositionWithIndex(indexInArray: number, timeline?: gsap.core.Timeline): void {
         if(timeline)
         {
-            const tl = gsap.timeline();
-            tl.to(this,{
-                distanceFromCenter: this.getRadius()*1.1,
-                duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
-                yoyo: true,
-                repeat: 1,
-                repeatDelay: Slice.visualizerAttributes.msComputedAnimationSpeed*2
-            }).to(this,{
-                angle: Slice.angleLength * indexInArray,
-                duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
-            },`-=${Slice.visualizerAttributes.msComputedAnimationSpeed*2}`);
+            const tl = Slice.animatePositionInTimeline(this,Slice.angleLength * indexInArray)
             timeline.add(tl,"<")
         }
         else
@@ -184,6 +186,32 @@ export class Slice implements Animatable
     public getRadius()
     {
         return this.radius;
+    }
+
+    public static animatePositionInTimeline = (element: Slice, angle: number) => {
+        const tl = gsap.timeline({
+            // onComplete: ()=>{
+            //     if(element.angle > 360)
+            //     {
+            //         element.angle-=360; //it shouldnt be higher than 720 so no need for modulo
+            //     }
+            //     else if (element.angle < 0)
+            //     {
+            //         element.angle+=360;
+            //     }
+            // }
+        });
+        tl.to(element,{
+            distanceFromCenter: element.getRadius() * 1.1,
+            duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
+            yoyo: true,
+            repeat: 1,
+            repeatDelay: Slice.visualizerAttributes.msComputedAnimationSpeed*2
+        }).to(element,{
+            angle: angle,
+            duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
+        },`-=${Slice.visualizerAttributes.msComputedAnimationSpeed*2}`);
+        return tl;
     }
 }
 

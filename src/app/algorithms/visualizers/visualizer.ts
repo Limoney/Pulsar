@@ -7,25 +7,45 @@ import {SleepLock} from "../utility/SleepLock";
 export interface Visualizer
 {
     update(): void;
+
     push(element: Animatable): void;
+
     pop(): void;
+
     insert(element: Animatable,index: number): void;
+
     remove(index: number): void;
+
     clear(): void;
+
     restart(initialData: number[]): void;
+
     enableStepByStep(): void;
+
     disableStepByStep(): void;
+
     play(algorithm: any): Promise<AlgorithmOutput>;
+
     resume(): void;
+
     pause(): void;
+
     setSpeed(speedPercent: number): void;
+
     setData(initialData: number[]): void;
+
     getElements(): Animatable[];
+
     getLock(): SleepLock;
+
     step(): void;
+
     hasRequestedForceQuit(): boolean;
+
     sort(): void;
+
     swap(leftIndex: number, rightIndex: number): Promise<void>
+    
     createElement(value: number): Animatable;
 }
 

@@ -47,20 +47,25 @@ const appRoutes: Routes = [
 			{
 				path: 'credits',
 				component: CreditsComponent,
-				// data: { animation: 'credits' }
+				data: { animation: 'credits' }
 			},
 			{
 				path: 'algorithm-list',
 				component: AlgorithmListComponent,
-				// data: { animation: 'algorithm-list' }
+				data: { animation: 'algorithm-list' }
 			}
 		]
 	},
 	{
 		path: 'algorithms',
 		component: AlgorithmsPageComponent,
+		data: { animation: 'algorithms' },
 		children: [
-			{path: ':name', component: AlgorithmComponent},
+			{
+				path: ':name', 
+				component: AlgorithmComponent,
+				data: { animation: 'algorithm' },
+			},
             // {
             //     path: 'linear-search',
             //     component: AlgorithmComponent,

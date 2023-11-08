@@ -16,7 +16,6 @@ export abstract class VisualizerCommon implements Visualizer
     protected lock: SleepLock;
     public elements: Animatable[] = [];
     public algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>
-    protected forceQuit: boolean = false;
 
     protected constructor(attributes: VisualizerAttributes, camera: Camera, algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>)
     {
