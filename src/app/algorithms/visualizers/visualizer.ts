@@ -20,11 +20,9 @@ export interface Visualizer
 
     restart(initialData: number[]): void;
 
-    enableStepByStep(): void;
-
-    disableStepByStep(): void;
-
     play(algorithm: any): Promise<AlgorithmOutput>;
+
+    nextStep(): void;
 
     resume(): void;
 

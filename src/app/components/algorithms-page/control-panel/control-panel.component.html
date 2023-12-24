@@ -1,6 +1,6 @@
 <div class="actions" (wheel)="scrollNavigation($event)">
 
-    <p-blockUI [target]="inputPanel" [blocked]="currentVisualizationState != visualizationStates.IDLE">
+    <p-blockUI [target]="inputPanel" [blocked]="!this.state.dataInputEnabled">
         <i class="pi pi-lock" style="font-size: 3rem"></i>
     </p-blockUI>
     <p-panel class="option-group" #inputPanel>
@@ -48,33 +48,29 @@
             <div class="column">
                 <button class="button-flex is-primary is-primary-hover"
                         (click)="play()"
-                        [disabled]="currentVisualizationState != visualizationStates.IDLE">
+                        [disabled]="!this.state.playEnabled">
                         Play
                 </button>
                 <button class="button-flex is-primary is-primary-hover" (click)="restart()">Restart</button>
             </div>
             <div class="column">
-                <div class="center">
-                    <span>Step by Step</span>
-                    <p-inputSwitch (onChange)="stepByStep()" [(ngModel)]="isStepByStepEnabled"></p-inputSwitch>
-                </div>
-                <button class="button-flex is-primary is-primary-hover"
-                        (click)="nextStep()"
-                        [disabled]="!isStepByStepEnabled || currentVisualizationState != visualizationStates.ANIMATING_MANUAL">
-                        Next Step
-                </button>
-            </div>
-            <div class="column">
                 <button class="button-flex is-primary is-primary-hover"
                         (click)="pause()"
-                        [disabled]="currentVisualizationState != visualizationStates.ANIMATING_AUTO"
+                        [disabled]="!this.state.pauseEnabled"
                         title="request stop at next available point in program">
                         Pause
                 </button>
                 <button class="button-flex is-primary is-primary-hover"
                         (click)="resume()"
-                        [disabled]="currentVisualizationState != visualizationStates.ANIMATING_MANUAL">
+                        [disabled]="!this.state.resumeEnabled">
                         Resume
+                </button>
+            </div>
+            <div class="column">
+                <button class="button-flex is-primary is-primary-hover"
+                        (click)="nextStep()"
+                        [disabled]="!this.state.nextStepEnabled">
+                        Next Step
                 </button>
             </div>
             <div class="column">
@@ -92,7 +88,7 @@
         </div>
     </p-panel>
 
-    <p-blockUI [target]="utilityPanel" [blocked]="currentVisualizationState != visualizationStates.IDLE">
+    <p-blockUI [target]="utilityPanel" [blocked]="!this.state.utilityEnabled">
         <i class="pi pi-lock" style="font-size: 3rem"></i>
     </p-blockUI>
     <p-panel class="option-group" #utilityPanel>

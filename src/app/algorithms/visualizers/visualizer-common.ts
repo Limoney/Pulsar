@@ -15,6 +15,7 @@ export abstract class VisualizerCommon implements Visualizer
     protected camera: Camera;
     protected lock: SleepLock;
     public elements: Animatable[] = [];
+    protected paused = false;
     public algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>
 
     protected constructor(attributes: VisualizerAttributes, camera: Camera, algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>)
@@ -32,7 +33,7 @@ export abstract class VisualizerCommon implements Visualizer
     }
     public step(): void
     {
-        if(this.attributes.stepByStep)
+        if(this.paused) 
         {
             this.pause();
         }
@@ -55,31 +56,25 @@ export abstract class VisualizerCommon implements Visualizer
 
     public abstract restart(initialData: number[]): void;
 
-    public enableStepByStep(): void
-    {
-        this.attributes.stepByStep = true;
-        this.lock.lock();
-    }
-
-    public disableStepByStep(): void
-    {
-        this.attributes.stepByStep = false;
-        this.lock.unlock();
-    }
-
     public async play(algorithmData: any)
     {
         this.attributes.forceQuit = false;
         return this.algorithm(this,this.elements,algorithmData);
     }
 
+    public nextStep() {
+        this.lock.unlock();
+    }
+
     public resume()
     {
+        this.paused = false;
         this.lock.unlock();
     }
 
     public pause()
     {
+        this.paused = true;
         this.lock.lock();
     }
 

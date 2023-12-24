@@ -10,6 +10,7 @@ import {AlgorithmConfigService} from 'src/app/services/algorithm-config.service'
 import {ThemeService} from 'src/app/services/theme.service';
 import {VisualizationManagerService} from 'src/app/services/visualization-manager.service';
 import {VisualizerFactoryService} from "../../../services/visualizer-factory.service";
+import { ControlPanelAutoState, ControlPanelIdleState, ControlPanelManualState } from 'src/app/interfaces/control-panel-state';
 
 @Component({
 	selector: 'app-control-panel',
@@ -56,11 +57,15 @@ export class ControlPanelComponent {
 
 	protected algorithmTypes: typeof AlgorithmType = AlgorithmType;
 
-	protected isStepByStepEnabled:boolean = false;
-
 	protected visualizationStates: typeof VisualizationState = VisualizationState;
 
-	protected currentVisualizationState!: VisualizationState;
+	private idleState = new ControlPanelIdleState();
+
+	private autoState = new ControlPanelAutoState();
+
+	private manualState = new ControlPanelManualState();
+
+	protected state = this.idleState;
 
 	constructor(private visualizationManager: VisualizationManagerService,
 				private router: Router,
@@ -86,7 +91,7 @@ export class ControlPanelComponent {
 
 		//this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.SET_NUMBER_OF_ELEMENTS,this.utilityNumberOfElements));
 		this.visualizationManager.getVisualizationState().subscribe(currentVisualizationState => {
-			this.currentVisualizationState = currentVisualizationState;
+			this.setState(currentVisualizationState);
 		})
 
         this.hideLabels = this.visualizationManager.getAttributes().valueLabelsHidden;
@@ -176,8 +181,7 @@ export class ControlPanelComponent {
 		if(this.algorithmDetails.type == AlgorithmType.Sorting || this.visualizationSearchValue.value)
 		{
 			this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.PLAY,this.visualizationSearchValue?.value));
-			const nextState = this.isStepByStepEnabled? VisualizationState.ANIMATING_MANUAL : VisualizationState.ANIMATING_AUTO;
-			this.visualizationManager.setVisualizationState(nextState);
+			this.visualizationManager.setVisualizationState(VisualizationState.ANIMATING_AUTO);
 		}
 		else
 		{
@@ -189,15 +193,6 @@ export class ControlPanelComponent {
 	{
 		this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.RESTART));
 		this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
-	}
-
-	protected stepByStep()
-	{
-		const nextStateStep = this.isStepByStepEnabled ? VisualizationAction.ENABLE_STEP_BY_STEP : VisualizationAction.DISABLE_STEP_BY_STEP
-		this.visualizationManager.addAction(new VisualizationContext(nextStateStep));
-		//TODO: fix this. step by step lock ui if pressed befor play
-		// const nextStateAnim = this.isStepByStepEnabled? VisualizationState.ANIMATING_MANUAL : VisualizationState.ANIMATING_AUTO;
-		// this.visualizationManager.setVisualizationState(nextStateAnim);
 	}
 
 	protected nextStep()
@@ -215,8 +210,8 @@ export class ControlPanelComponent {
 	{
 		this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.RESUME));
 		this.visualizationManager.setVisualizationState(VisualizationState.ANIMATING_AUTO);
-		this.isStepByStepEnabled = false;
-		this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.DISABLE_STEP_BY_STEP));
+		// this.isStepByStepEnabled = false;
+		// this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.DISABLE_STEP_BY_STEP));
 
 	}
 
@@ -316,5 +311,21 @@ export class ControlPanelComponent {
             repeat: 5,
             yoyo: true
         })
+	}
+
+	private setState(visualizationState: VisualizationState){
+		console.log(VisualizationState[visualizationState]);
+		
+		switch(visualizationState){
+			case VisualizationState.IDLE:
+				this.state = this.idleState;
+				break;
+			case VisualizationState.ANIMATING_AUTO:
+				this.state = this.autoState;
+				break;
+			case VisualizationState.ANIMATING_MANUAL:
+				this.state = this.manualState;
+				break;
+		}
 	}
 }

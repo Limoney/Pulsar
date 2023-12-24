@@ -6,8 +6,6 @@ export enum VisualizationAction {
     CLEAR,
     PLAY,
     RESTART,
-    ENABLE_STEP_BY_STEP,
-    DISABLE_STEP_BY_STEP,
     NEXT_STEP,
     PUASE,
     RESUME,

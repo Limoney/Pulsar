@@ -269,15 +269,11 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 			case VisualizationAction.RESTART:
 				this.visualizer.restart(this.visualizationData);
 				break
-			case VisualizationAction.ENABLE_STEP_BY_STEP:
-				this.visualizer.enableStepByStep();
-				break
-			case VisualizationAction.DISABLE_STEP_BY_STEP:
-				this.visualizer.disableStepByStep();
-				break
 			case VisualizationAction.RESUME:
-			case VisualizationAction.NEXT_STEP:
 				this.visualizer.resume();
+				break;
+			case VisualizationAction.NEXT_STEP:
+				this.visualizer.nextStep();
 				break
 			case VisualizationAction.PUASE:
 				this.visualizer.pause();

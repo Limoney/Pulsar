@@ -7,7 +7,6 @@ import {Camera} from "../utility/Camera";
 import {Animatable} from "./animatable";
 
 export class VisualizerAttributes {
-    public stepByStep: boolean;
     public minimumStepDuration: number = 10;
     public readonly msBetweenStepsDefault;
     public msBetweenSteps: number;
@@ -21,7 +20,6 @@ export class VisualizerAttributes {
         this.selectedVisualizer = visualizerName;
         this.msBetweenStepsDefault = msBetweenSteps;
         this.msBetweenSteps = this.msBetweenStepsDefault;
-        this.stepByStep = false;
     }
 
     // copy()
