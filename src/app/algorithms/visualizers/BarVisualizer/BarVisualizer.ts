@@ -1,15 +1,12 @@
 import * as p5 from "p5";
 import { Camera } from "../../utility/Camera";
-import { SleepLock } from "../../utility/SleepLock";
 import { Bar } from "./Bar";
-import { P5Service } from "src/app/services/p5.service";
 import { AlgorithmOutput } from "src/app/interfaces/algorithm-output";
 import gsap from "gsap";
-import {Visualizer} from "../visualizer";
 import {VisualizerAttributes} from "../visualizer-attributes";
 import {Animatable} from "../animatable";
 import {VisualizerCommon} from "../visualizer-common";
-import {Slice} from "../PieVisualizer/slice";
+import { ThemeService } from "src/app/services/theme.service";
 
 //screw it
 // visualizer should be abstract class, drop SimpleVisualizer
@@ -22,6 +19,9 @@ export class BarVisualizer extends VisualizerCommon
             this.sketchRef.textSize(Bar.width*0.4);
             this.sketchRef.textAlign(this.sketchRef.CENTER, this.sketchRef.BOTTOM);
         },0)
+        const themeService = new ThemeService();
+        Bar.defaultFillColor = themeService.getColor("primary-color");
+		Bar.defaultStrokeColor = themeService.getColor("primary-600");
         Bar.visualizerAttributes = attributes;
 
     }

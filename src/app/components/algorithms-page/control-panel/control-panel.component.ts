@@ -14,7 +14,7 @@ import {VisualizerFactoryService} from "../../../services/visualizer-factory.ser
 @Component({
 	selector: 'app-control-panel',
 	templateUrl: './control-panel.component.html',
-	styleUrls: ['./control-panel.component.css', '../ui-panel-shared.css']
+	styleUrls: ['./control-panel.component.css']
 })
 export class ControlPanelComponent {
 

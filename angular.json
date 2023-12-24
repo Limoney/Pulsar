@@ -34,7 +34,10 @@
               "./src/libs/prism/prism-one-dark.css"
             ],
             "scripts": [
-              "./src/libs/hammer.min.js"
+              "./src/libs/hammer.min.js",
+              "./node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
+              "./node_modules/prismjs/plugins/match-braces/prism-match-braces.js",
+              "./node_modules/prismjs/plugins/line-highlight/prism-line-highlight.js"
             ]
           },
           "configurations": {
@@ -43,7 +46,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "3mb"
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",

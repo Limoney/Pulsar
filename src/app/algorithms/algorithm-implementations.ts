@@ -20,13 +20,11 @@ export class AlgorithmImplementations
 
     private valueNotFoundMessage = "value not found ";
 
-    // private themeService = new ThemeService();
-    // private markColorLight = this.themeService.getColor("purple-500")
-    // private markColorDark = this.themeService.getColor("purple-600")
+    private themeService = new ThemeService();
 
-    private markColorLight = "#9b59b6";
+    private markColorLight = this.themeService.getColor("mark-light");
 
-    private markColorDark = "#7f3d9b";
+    private markColorDark = this.themeService.getColor("mark-dark");
 
     static instance: AlgorithmImplementations;
 

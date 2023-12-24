@@ -37,7 +37,7 @@ nav
     color: var(--text-color);
 }
 .nav-element:hover{
-    background-color: var(--primary-dark);
+    background-color: var(--primary-600);
 }
 .nav-elements
 {

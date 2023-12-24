@@ -6,8 +6,8 @@ import {VisualizerAttributes} from "../visualizer-attributes";
 
 export class Bar implements Animatable
 {
-    public static defaultFillColor = "#eeeeee";
-    public static defaultStrokeColor = "#a9a9a9";
+    public static defaultFillColor: string;
+    public static defaultStrokeColor: string;
     public static width: number = 100;
     public static visualizerAttributes: VisualizerAttributes;
 

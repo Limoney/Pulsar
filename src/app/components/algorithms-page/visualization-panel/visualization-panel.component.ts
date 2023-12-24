@@ -24,7 +24,6 @@ import {Visualizer} from "../../../algorithms/visualizers/visualizer";
 import {VisualizerFactoryService} from "../../../services/visualizer-factory.service";
 import {Camera} from "../../../algorithms/utility/Camera";
 
-
 @Component({
 	selector: 'app-visualization-panel',
 	templateUrl: './visualization-panel.component.html',
@@ -90,8 +89,6 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
                 private visualizerFactory: VisualizerFactoryService)
 	{
 		this.backgroundColor = themeService.getColor("surface-b");
-		Bar.defaultFillColor = themeService.getColor("primary-color");
-		Bar.defaultStrokeColor = themeService.getColor("primary-600");
         this.visualizerAttributes = this.visualizationManager.getAttributes();
 	}
 

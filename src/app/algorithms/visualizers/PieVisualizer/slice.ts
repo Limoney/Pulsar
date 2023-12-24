@@ -6,39 +6,40 @@ import {VisualizerAttributes} from "../visualizer-attributes";
 
 export class Slice implements Animatable
 {
-    public static defaultFillColor = "#eeeeee";
-    public static defaultStrokeColor = "#a9a9a9";
+    public static defaultFillColor: string;
+    public static defaultStrokeColor: string;
     public static angleLength = 90;
     public static bodyLength = 100;
     public static labelSize = 10;
     public static visualizerAttributes: VisualizerAttributes;
-    public static readonly colors = [
-        "#e74c3cff",
-        "#e67e22ff",
-        "#f1c40fff",
-        "#2ecc71ff",
-        "#3498dbff",
-        "#9b59b6ff"
-    ]
+    public static colors: string[];
 
     private angle: number;
+
     private radius: number;
-    private position: p5.Vector;
+
     public fillColor: string;
+
     public strokeColor: string;
+
     public prevFillColor: string;
+
     public prevStrokeColor: string;
+
     public strokeSize: number = 1;
+
     private sketch: p5;
+
     private value: number;
+
     public distanceFromCenter = 0;
+
     private isMarked: boolean = false;
 
-    constructor(value: number,angle: number, radius: number, position: p5.Vector) {
+    constructor(value: number,angle: number, radius: number) {
         this.sketch = new P5Service().getP5Instance();
         this.angle = angle;
         this.radius = radius;
-        this.position = position;
         this.fillColor = Slice.defaultFillColor;
         this.strokeColor = Slice.defaultStrokeColor;
         this.prevFillColor = Slice.defaultFillColor;

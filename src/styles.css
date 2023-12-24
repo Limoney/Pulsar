@@ -11,6 +11,8 @@ body
     --secondary: #ecf0f1;
     --secondary-dark: #d0dadc;
     --secondary-darker: #b7c6c9;
+    --mark-light: #9b59b6;
+    --mark-dark: #7f3d9b;
     --font: #fefefe;
 }
 *

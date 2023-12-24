@@ -25,15 +25,11 @@ export class AlgorithmsPageComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.route.queryParams.subscribe(params => {
-			const name = params['name'];
-			if(name)
-			{
-				this.currentAlgorithmIndex = this.algorithmConfig.algorithms.list.map(elem => elem.linkName).indexOf(name);
-				this.currentAlgorithm = this.algorithmConfig.algorithms.list[this.currentAlgorithmIndex];
-			}
-			this.loading = false;
-		});
+		const algorithmName = this.route.snapshot.params['name'];
+		if(algorithmName) {
+			this.currentAlgorithmIndex = this.algorithmConfig.algorithms.list.map(elem => elem.linkName).indexOf(algorithmName);
+			this.currentAlgorithm = this.algorithmConfig.algorithms.list[this.currentAlgorithmIndex];
+		}
 	}
 
     // playAnim(outlet: RouterOutlet)

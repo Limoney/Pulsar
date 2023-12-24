@@ -3,8 +3,9 @@ import { AlgorithmOutput } from "src/app/interfaces/algorithm-output";
 import gsap from "gsap";
 import {VisualizerAttributes} from "../visualizer-attributes";
 import {Animatable} from "../animatable";
-import {Slice} from "./slice";
+import {Slice} from "./Slice";
 import {VisualizerCommon} from "../visualizer-common";
+import { ThemeService } from "src/app/services/theme.service";
 
 export class PieVisualizer extends VisualizerCommon
 {
@@ -21,7 +22,8 @@ export class PieVisualizer extends VisualizerCommon
         },0); // WHY NO WORK?
         this.sketchRef.angleMode(this.sketchRef.DEGREES);
         this.sketchRef.ellipseMode(this.sketchRef.CENTER);
-
+        const themeService = new ThemeService();
+        Slice.colors = themeService.palette;
     }
 
     public override update(): void
@@ -101,7 +103,7 @@ export class PieVisualizer extends VisualizerCommon
         Slice.angleLength = 360/values.length;
         for(let i = 0; i< values.length; i++)
         {
-            let slice = new Slice(values[i],Slice.angleLength*i,Slice.bodyLength,this.sketchRef.createVector(this.sketchRef.width/2,this.sketchRef.height/2));
+            let slice = new Slice(values[i],Slice.angleLength*i,Slice.bodyLength);
             this.setElementColor(slice);
             this.elements.push(slice);
         }
@@ -150,19 +152,19 @@ export class PieVisualizer extends VisualizerCommon
     }
 
     public override createElement(value: number): Animatable {
-        return new Slice(value,0,Slice.bodyLength,this.sketchRef.createVector(0,0));
+        return new Slice(value,0,Slice.bodyLength);
     }
 
     private setElementColor(element: Slice): void
     {
         let colorIndex = this.minElement < this.maxElement ?
-                                                                    this.sketchRef.map(element.valueOf(),
-                                                                    this.minElement,
-                                                                    this.maxElement,
-                                                              0,
-                                                                    Slice.colors.length)
-                                                                   :
-                                                                    0
+                                                            this.sketchRef.map(element.valueOf(),
+                                                            this.minElement,
+                                                            this.maxElement,
+                                                            0,
+                                                            Slice.colors.length)
+                                                            :
+                                                            0
 
         let nextColorPercent =  colorIndex - Math.floor(colorIndex);
         const firstColorIndex = Math.floor(colorIndex%Slice.colors.length);
@@ -177,7 +179,7 @@ export class PieVisualizer extends VisualizerCommon
         element.setColor(color.toString("#rrggbb"));
     }
 
-    private updateFontSize() //TODO: move to ScreenScaleService
+    private updateFontSize()
     {
         let fontSize = Math.min(Math.max(Slice.angleLength,this.minFontSize),this.maxFontSize);
         Slice.labelSize = fontSize;
