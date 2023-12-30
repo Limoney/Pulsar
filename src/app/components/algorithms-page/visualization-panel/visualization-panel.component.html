@@ -1,4 +1,4 @@
-<p-splitter [panelSizes]="[75, 25]" [style]="{ height: '100%' }" (onResizeEnd)="onPanelResizeEnd($event)" (onResizeStart)="onPanelResizeStart($event)">
+<p-splitter [panelSizes]="[75, 25]" [minSizes]="[30,0]" [style]="{ height: '100%', overflow: 'hidden' }" (onResizeEnd)="onPanelResizeEnd($event)" (onResizeStart)="onPanelResizeStart($event)">
     <ng-template pTemplate>
         <div id="canvas-wrapper" #canvasWrapper>
             <div class="algorithm-output" #output >

@@ -4,27 +4,26 @@ import { P5Service } from "src/app/services/p5.service";
 export class Camera
 {
     public position: p5.Vector;
-    public minSpeed: number;
-    public maxSpeed: number;
     public lastPointerPosition: p5.Vector;
-    public zoomLevel: number;
-    public zoomSpeed: number;
+    public zoomLevel: number = 1;
+    public zoomSpeed: number = 0.05;
     private sketchRef: p5;
-    private isMoving: boolean;
 
-    constructor(center = null)
+    constructor(position = null)
     {
         //width/2,height/2
-        this.sketchRef = new P5Service().getP5Instance();
-        if(center)
-            this.position = this.sketchRef.createVector(center);
+        this.sketchRef = P5Service.getP5Instance();
+        
+        if(position)
+        {
+            this.position = this.sketchRef.createVector(position);
+        }
         else
+        {
             this.position = this.sketchRef.createVector(0,0);
-        this.minSpeed = 1;
-        this.maxSpeed = 1000;
+        }
         this.zoomLevel = 1;
         this.zoomSpeed = 0.05;
-        this.isMoving = false;
         this.lastPointerPosition = this.sketchRef.createVector(0,0);
     }
 
@@ -56,13 +55,11 @@ export class Camera
 
     onMoveStart(pointerX: number,pointerY: number)
     {
-        this.isMoving = true;
         this.lastPointerPosition = this.sketchRef.createVector(pointerX,pointerY)
     }
 
     onMoveEnd(pointerX: number,pointerY: number)
     {
-        this.isMoving = false;
         this.lastPointerPosition = this.sketchRef.createVector(pointerX,pointerY)
     }
 

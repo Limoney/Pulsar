@@ -12,7 +12,7 @@ import { AlgorithmConfigService } from 'src/app/services/algorithm-config.servic
     // ]
 })
 export class AlgorithmComponent {
-  protected loading: boolean = true;
+  	protected loading: boolean = true;
 	protected currentAlgorithm!: AlgorithmDetails;
 	protected currentAlgorithmIndex: number = 0;
 

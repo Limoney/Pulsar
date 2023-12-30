@@ -19,6 +19,12 @@ import { ControlPanelAutoState, ControlPanelIdleState, ControlPanelManualState }
 })
 export class ControlPanelComponent {
 
+	@Input("algorithmDetails")
+	public algorithmDetails!: AlgorithmDetails;
+
+	@Input("algorithmIndex")
+	public algorithmIndex!: number;
+
 	protected animationSpeed: number;
 
 	protected numberOfElements: number = 20;
@@ -48,12 +54,6 @@ export class ControlPanelComponent {
 
 	@ViewChild('utilityMinlElement')
 	protected utilityMinElement!: InputNumber;
-
-	@Input("algorithmDetails")
-	public algorithmDetails!: AlgorithmDetails;
-
-	@Input("algorithmIndex")
-	public algorithmIndex!: number;
 
 	protected algorithmTypes: typeof AlgorithmType = AlgorithmType;
 

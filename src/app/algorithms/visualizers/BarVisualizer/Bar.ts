@@ -20,7 +20,7 @@ export class Bar implements Animatable
 
     constructor(x: number,y: number,w: number,v: number)
     {
-        this.sketch = new P5Service().getP5Instance();
+        this.sketch = P5Service.getP5Instance();
         this.position = this.sketch.createVector(x,y)
         this.value = v;
         this.fillColor = Bar.defaultFillColor;
@@ -46,7 +46,7 @@ export class Bar implements Animatable
         }
     }
 
-    mark(color: string)
+    async mark(color: string)
     {
         return new Promise<void>(resolve => {
             gsap.to(this,{

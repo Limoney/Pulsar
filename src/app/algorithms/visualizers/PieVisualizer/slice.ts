@@ -37,7 +37,7 @@ export class Slice implements Animatable
     private isMarked: boolean = false;
 
     constructor(value: number,angle: number, radius: number) {
-        this.sketch = new P5Service().getP5Instance();
+        this.sketch = P5Service.getP5Instance();
         this.angle = angle;
         this.radius = radius;
         this.fillColor = Slice.defaultFillColor;

@@ -14,12 +14,8 @@ import * as Prism from 'prismjs';
 import { MenuItem, MessageService } from 'primeng/api';
 import { SpeedDial } from 'primeng/speeddial';
 import { VisualizationState } from 'src/app/enums/visualization-state';
-import { BarVisualizer } from 'src/app/algorithms/visualizers/BarVisualizer/BarVisualizer';
-import { Bar } from 'src/app/algorithms/visualizers/BarVisualizer/Bar';
 import { AlgorithmOutput } from 'src/app/interfaces/algorithm-output';
 import { PrismService } from 'src/app/services/prism.service';
-import {VisualizerAttributes} from "../../../algorithms/visualizers/visualizer-attributes";
-import {PieVisualizer} from "../../../algorithms/visualizers/PieVisualizer/PieVisualizer";
 import {Visualizer} from "../../../algorithms/visualizers/visualizer";
 import {VisualizerFactoryService} from "../../../services/visualizer-factory.service";
 import {Camera} from "../../../algorithms/utility/Camera";
@@ -55,14 +51,6 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	protected visualizer!: Visualizer;
 
-	private numberOfElements!: number
-
-	private maxElement!: number
-
-	private minElement!: number;
-
-	private p5Subscription!: Subscription;
-
 	private prismSubscription!: Subscription;
 
 	private actionSubscription!: Subscription;
@@ -73,29 +61,20 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	canvasActions: MenuItem[] = [];
 
-    private visualizerAttributes: VisualizerAttributes;
-
-    private selectedVisualizerType!: any;
-
     private camera!: Camera;
 
     private visualizationData: number[] = [];
 
 	constructor(private dataGeneratorService: RandomDataGeneratorService,
-				private p5Service: P5Service,
 				private visualizationManager: VisualizationManagerService,
 				private themeService: ThemeService,
 				private prismService: PrismService,
                 private visualizerFactory: VisualizerFactoryService)
 	{
 		this.backgroundColor = themeService.getColor("surface-b");
-        this.visualizerAttributes = this.visualizationManager.getAttributes();
 	}
 
 	ngOnInit(): void {
-
-
-
 		//prevent dial from closing after selecting one of the options
 		SpeedDial.prototype.onItemClick = function (e: MouseEvent, item: MenuItem) {
 			if (item.command) {
@@ -129,32 +108,26 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 	}
 
 	ngAfterViewInit(): void {
-		this.p5Subscription = this.p5Service.ready().subscribe((isP5Ready) => {
-			if(isP5Ready)
-			{
+		setTimeout(() => {
+			this.camera = new Camera();
+			this.visualizer = this.visualizerFactory.create(this.visualizationManager.getAttributes().selectedVisualizer,
+				this.camera,
+				this.algorithmDetails.implementation,
+				this.visualizationData);
 
-                setTimeout(() => {
-                    this.camera = new Camera();
-                    this.visualizer = this.visualizerFactory.create(this.visualizationManager.getAttributes().selectedVisualizer,
-                        this.camera,
-                        this.algorithmDetails.implementation,
-                        this.visualizationData);
+			this.sketch = P5Service.getP5Instance();
+			this.setupCanvas();
+			this.sketch.draw = this.drawCanvas.bind(this);
+			const boundHandleActions = this.handleUIAction.bind(this);
+			this.actionSubscription = this.visualizationManager.getActions().subscribe((actions) => {
+				this.visualizationManager.softClear();
 
-                    this.sketch = this.p5Service.getP5Instance();
-                    this.setupCanvas();
-                    this.sketch.draw = this.drawCanvas.bind(this);
-                    const boundHandleActions = this.handleUIAction.bind(this);
-                    this.actionSubscription = this.visualizationManager.getActions().subscribe((actions) => {
-                        this.visualizationManager.softClear();
-
-                        for(const action of actions)
-                        {
-                            boundHandleActions(action);
-                        }
-                    });
-                },0);
-			}
-		})
+				for(const action of actions)
+				{
+					boundHandleActions(action);
+				}
+			});
+		},0);
 
 		// https://techincent.com/code-syntax-highlighter-angular-with-prism-js/
 		this.prismSubscription = this.prismService.getHighlightedLines().subscribe((lines) => {
@@ -165,7 +138,6 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 
 	ngOnDestroy(): void {
 		this.prismService.highlightLines("");
-		this.p5Subscription.unsubscribe();
 		this.prismSubscription.unsubscribe();
 		this.actionSubscription.unsubscribe();
 	}
@@ -260,7 +232,7 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
                 this.visualizationData = [];
 				break
 			case VisualizationAction.PLAY:
-                this.visualizer.restart(this.visualizationData);
+                this.visualizer.restart(JSON.parse(JSON.stringify(this.visualizationData)));
 				this.algorithmOutput = await this.visualizer.play(context.data);
 				this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 				this.flashOutput();
@@ -295,7 +267,7 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
                 }
 				break
             case VisualizationAction.SET_VISUALIZER:
-                this.camera = new Camera();
+                this.camera.reset();
                 this.visualizer = this.visualizerFactory.create(this.visualizationManager.getAttributes().selectedVisualizer,
                                                                 this.camera,
                                                                 this.algorithmDetails.implementation,

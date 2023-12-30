@@ -14,7 +14,7 @@ export class BarVisualizer extends VisualizerCommon
 {
     constructor(attributes: VisualizerAttributes, camera: Camera, algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>)
     {
-        super(attributes,camera, algorithm);
+        super(attributes, camera, algorithm);
         setTimeout(() => {
             this.sketchRef.textSize(Bar.width*0.4);
             this.sketchRef.textAlign(this.sketchRef.CENTER, this.sketchRef.BOTTOM);
@@ -29,9 +29,11 @@ export class BarVisualizer extends VisualizerCommon
     public override update(): void
     {
         this.camera.update();
-        for(let element of this.elements) {
+        for(let element of this.elements) 
+        {
             const box = element.getBoundingBox();
-            if(!this.camera.isOnScreen(box.position.x, box.position.y, box.size.x, box.size.y)) {
+            if(!this.camera.isOnScreen(box.position.x, box.position.y, box.size.x, box.size.y)) 
+            {
                 continue;
             }
             element.update();
@@ -130,6 +132,7 @@ export class BarVisualizer extends VisualizerCommon
     }
 
     public override createElement(value: number): Animatable {
+
         return new Bar(0,0,Bar.width,value);
     }
 }

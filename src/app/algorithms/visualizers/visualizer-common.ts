@@ -21,7 +21,7 @@ export abstract class VisualizerCommon implements Visualizer
     protected constructor(attributes: VisualizerAttributes, camera: Camera, algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>)
     {
         this.attributes = attributes;
-        this.sketchRef = new P5Service().getP5Instance();
+        this.sketchRef = P5Service.getP5Instance();
         this.camera = camera;
         this.lock = new SleepLock(this.attributes.msBetweenSteps);
         this.algorithm = algorithm;
