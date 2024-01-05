@@ -7,8 +7,8 @@
             <div>
                 <a [routerLink]="[algorithmsRoute,algorithm.linkName]"class="algorithm">
                     <div class="icon">
-                        <img *ngIf="algorithm.type == algorithmTypes.Searching" src="/assets/searching_icon.svg" alt="searching icon">
-                        <img *ngIf="algorithm.type == algorithmTypes.Sorting"  src="/assets/sorting_icon.svg" alt="searching icon">
+                        <img *ngIf="algorithm.type == algorithmTypes.Searching" src="assets/searching_icon.svg" alt="searching icon">
+                        <img *ngIf="algorithm.type == algorithmTypes.Sorting"  src="assets/sorting_icon.svg" alt="searching icon">
                     </div>
                     <div class="content">
                         <h4>{{algorithm.name}}</h4>
