@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1704471952885,
+  "timestamp": 1704481790049,
   "index": "/Pulsar/index.html",
   "assetGroups": [
     {
@@ -123,7 +123,7 @@
     "/Pulsar/hue.8b1818380241e6ac.png": "f81ae627637a684614aa726e206c73ce099a01fd",
     "/Pulsar/index.html": "5c628e6001e040c805c4005456a9f483272d478f",
     "/Pulsar/main.edcd38d946607011.js": "974e794ce946e55769aff2790be96a3cc6ea6684",
-    "/Pulsar/manifest.webmanifest": "e615fac2bfc24f906dd649a51415c17ce94a70fa",
+    "/Pulsar/manifest.webmanifest": "9fc3557511d6838a638a77989b5fd1933181f73b",
     "/Pulsar/polyfills.72afacd8aeab4b21.js": "c0de446f3219f66f1bfca2514c369ccdd489a033",
     "/Pulsar/primeicons.0112589c5695a9ed.ttf": "ceeb46d594fde5cc507cdf8b70e38e78fe47653c",
     "/Pulsar/primeicons.943ab24c43224d29.svg": "d3332a45242b8f6edbf3f3c7176a280e7edcd961",
