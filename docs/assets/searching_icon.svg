@@ -1,0 +1,18 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="10" y="236" width="24" height="64" rx="5" fill="#1ABC9C"/>
+<rect x="42" y="217" width="24" height="83" rx="5" fill="#1ABC9C"/>
+<rect x="74" y="188" width="24" height="112" rx="5" fill="#1ABC9C"/>
+<rect x="106" y="249" width="24" height="51" rx="5" fill="#1ABC9C"/>
+<rect x="138" y="217" width="24" height="83" rx="5" fill="#1ABC9C"/>
+<rect x="170" y="199" width="24" height="101" rx="5" fill="#1ABC9C"/>
+<rect x="202" y="264" width="24" height="36" rx="5" fill="#1ABC9C"/>
+<rect x="234" y="166" width="24" height="134" rx="5" fill="#1ABC9C"/>
+<rect x="266" y="236" width="24" height="64" rx="5" fill="#1ABC9C"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M230.959 300H218.947L157.985 38.7576L213.315 16.4926L299.5 161.616V258.786C293.501 260.38 287.34 262.422 281.138 264.918C258.431 274.055 240.329 287.2 230.959 300Z" fill="white" fill-opacity="0.3"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M299.5 258.786V300H230.959C240.329 287.2 258.431 274.055 281.138 264.918C287.34 262.422 293.501 260.38 299.5 258.786Z" fill="white" fill-opacity="0.6"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 300H77.1041C67.7349 287.2 49.6338 274.055 26.9285 264.917C17.7301 261.215 8.62115 258.51 0 256.785V300Z" fill="white" fill-opacity="0.6"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M89.1178 300L150.093 38.7627L94.7641 16.4948L0 176.045V256.785C8.62115 258.51 17.73 261.215 26.9284 264.917C49.6336 274.055 67.7347 287.2 77.1039 300H89.1178Z" fill="white" fill-opacity="0.3"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M151.5 62C194.302 62 229 34.2417 229 0H74C74 34.2417 108.698 62 151.5 62Z" fill="#1ABC9C"/>
+<circle cx="106" cy="26" r="12" fill="#D9D9D9"/>
+<circle cx="198" cy="26" r="12" fill="#D9D9D9"/>
+</svg>
