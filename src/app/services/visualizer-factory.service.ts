@@ -20,7 +20,10 @@ export class VisualizerFactoryService {
 
     }
 
-    public create(visualizerName: string, camera: Camera,algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput> ,visualizationData: number[])
+    public create(visualizerName: string, 
+                  camera: Camera,
+                  algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>,
+                  visualizationData: number[])
     {
         let index =this.visualizerList.map(element => element.name).indexOf(visualizerName);
         const visualizer = new this.visualizerList[index].class(this.visualizationManager.getAttributes(),camera,algorithm);

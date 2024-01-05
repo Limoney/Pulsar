@@ -75,13 +75,13 @@ export class BarVisualizer extends VisualizerCommon
         }
     }
 
-    public override restart(initialData: number[]): void
+    public override restart(values: number[]): void
     {
-        this.attributes.forceQuit = true;
+        this.forceQuit = true;
         for(let i=0;i<this.elements.length;i++)
         {
             this.elements[i].unmark(true);
-            this.elements[i].setValue(initialData[i])
+            this.elements[i].setValue(values[i])
             this.elements[i].setPositionWithIndex(i);
         }
     }

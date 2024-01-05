@@ -3,7 +3,6 @@ import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import { AlgorithmDetails, AlgorithmType } from 'src/app/interfaces/algorithm-details';
 import { algorithmPageTransition } from 'src/app/route-animations';
 import { AlgorithmConfigService } from 'src/app/services/algorithm-config.service';
-import { Environment } from 'src/environments/environment';
 import {ReplaySubject} from "rxjs";
 
 @Component({

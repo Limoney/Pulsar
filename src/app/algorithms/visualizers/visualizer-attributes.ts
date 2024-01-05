@@ -10,7 +10,6 @@ export class VisualizerAttributes {
     public minimumStepDuration: number = 10;
     public readonly msBetweenStepsDefault;
     public msBetweenSteps: number;
-    public forceQuit: boolean = false;
     public animationSpeedPercent = 0;
     public msComputedAnimationSpeed = 0;
     public valueLabelsHidden = false;

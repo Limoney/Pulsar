@@ -45,7 +45,7 @@ export class PieVisualizer extends VisualizerCommon
     public override push(element: Slice): void
     {
         this.elements.push(element);
-        //this.updateElementsLength(element,'add');
+        this.updateElementsAfterEdit(element);
         this.setElementColor(element);
         this.updateFontSize();
     }
@@ -55,7 +55,7 @@ export class PieVisualizer extends VisualizerCommon
         const element = this.elements.pop();
         if(element)
         {
-            //this.updateElementsLength(element as Slice,'rem');
+            this.updateElementsAfterEdit(element as Slice,true);
             this.setElementColor(element as Slice);
         }
         this.updateFontSize();
@@ -65,7 +65,7 @@ export class PieVisualizer extends VisualizerCommon
     {
         index = this.sketchRef.min(this.sketchRef.max(index,0),this.elements.length);
         this.elements.splice(index, 0, element);
-        //this.updateElementsLength(element,'add');
+        this.updateElementsAfterEdit(element);
         this.setElementColor(element);
         this.updateFontSize();
     }
@@ -75,19 +75,19 @@ export class PieVisualizer extends VisualizerCommon
         index = this.sketchRef.min(this.sketchRef.max(index,0),this.elements.length-1);
         const element = this.elements[index] as Slice;
         this.elements.splice(index,1);
-        //this.updateElementsLength(element,'add');
+        this.updateElementsAfterEdit(element,true);
         this.setElementColor(element);
         this.updateFontSize();
     }
 
 
-    public override restart(initialData: number[]): void
+    public override restart(values: number[]): void
     {
-        this.attributes.forceQuit = true;
+        this.forceQuit = true;
         for(let i= 0; i<this.elements.length; i++)
         {
             this.elements[i].unmark(true);
-            this.elements[i].setValue(initialData[i])
+            this.elements[i].setValue(values[i])
             this.elements[i].setPositionWithIndex(i);
             this.setElementColor(this.elements[i] as Slice);
         }
@@ -146,8 +146,10 @@ export class PieVisualizer extends VisualizerCommon
             //         rightAngle = leftAngleCopy - diff;
             //     }
             //}
-            mainTimeline.add(Slice.animatePositionInTimeline(left,rightAngle),0);
-            mainTimeline.add(Slice.animatePositionInTimeline(right,leftAngle),0);
+            //mainTimeline.add(left.animatePositionInTimeline(rightAngle),0);
+            //mainTimeline.add(right.animatePositionInTimeline(leftAngle),0);
+            left.setPositionWithIndex(rightElement,mainTimeline);
+            right.setPositionWithIndex(leftElement,mainTimeline);
         })
     }
 
@@ -157,25 +159,22 @@ export class PieVisualizer extends VisualizerCommon
 
     private setElementColor(element: Slice): void
     {
-        let colorIndex = this.minElement < this.maxElement ?
-                                                            this.sketchRef.map(element.valueOf(),
-                                                            this.minElement,
-                                                            this.maxElement,
-                                                            0,
-                                                            Slice.colors.length)
-                                                            :
-                                                            0
+        const colorIndex = this.sketchRef.map(element.valueOf(),
+                                            this.minElement,
+                                            this.maxElement,
+                                            0,
+                                            Slice.colors.length);
 
-        let nextColorPercent =  colorIndex - Math.floor(colorIndex);
+        let nextColorPercent = colorIndex - Math.floor(colorIndex);
         const firstColorIndex = Math.floor(colorIndex%Slice.colors.length);
-        const secondColorIndex = Math.floor((colorIndex +1 )%Slice.colors.length);
+        const secondColorIndex = Math.floor((colorIndex +1)%Slice.colors.length);
 
         let firstColor = Slice.colors[firstColorIndex];
         let secondColor = Slice.colors[secondColorIndex];
 
         let color = this.sketchRef.lerpColor(this.sketchRef.color(firstColor),
-                                                                 this.sketchRef.color(secondColor),
-                                                                 nextColorPercent)
+                                             this.sketchRef.color(secondColor),
+                                             nextColorPercent)
         element.setColor(color.toString("#rrggbb"));
     }
 
@@ -185,47 +184,47 @@ export class PieVisualizer extends VisualizerCommon
         Slice.labelSize = fontSize;
         this.sketchRef.textSize(Slice.labelSize);
     }
-    // private updateElementsLength(modifiedElement: Slice, operation: 'add' | 'rem')
-    // {
-    //     let valueRangeChanged = false;
-    //     if(operation=='add')
-    //     {
-    //         if(modifiedElement.valueOf() < this.minElement)
-    //         {
-    //             this.minElement = modifiedElement.valueOf();
-    //             valueRangeChanged = true;
-    //         }
+    private updateElementsAfterEdit(modifiedElement: Slice, hasElementBeenRemoved: boolean = false)
+    {
+        let valueRangeChanged = false;
+        if(!hasElementBeenRemoved)
+        {
+            if(modifiedElement.valueOf() < this.minElement)
+            {
+                this.minElement = modifiedElement.valueOf();
+                valueRangeChanged = true;
+            }
 
-    //         if(modifiedElement.valueOf() > this.maxElement)
-    //         {
-    //             this.maxElement = modifiedElement.valueOf();
-    //             valueRangeChanged = true;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         if(this.minElement == modifiedElement.valueOf())
-    //         {
-    //             this.minElement = this.sketchRef.min(this.elements.map(element => element.valueOf()));
-    //             valueRangeChanged = true;
-    //         }
-    //         if(this.maxElement == modifiedElement.valueOf())
-    //         {
-    //             this.maxElement = this.sketchRef.max(this.elements.map(element => element.valueOf()));
-    //             valueRangeChanged = true;
-    //         }
-    //     }
+            if(modifiedElement.valueOf() > this.maxElement)
+            {
+                this.maxElement = modifiedElement.valueOf();
+                valueRangeChanged = true;
+            }
+        }
+        else
+        {
+            if(this.minElement == modifiedElement.valueOf())
+            {
+                this.minElement = this.sketchRef.min(this.elements.map(element => element.valueOf()));
+                valueRangeChanged = true;
+            }
+            if(this.maxElement == modifiedElement.valueOf())
+            {
+                this.maxElement = this.sketchRef.max(this.elements.map(element => element.valueOf()));
+                valueRangeChanged = true;
+            }
+        }
 
-    //     Slice.angleLength = 360/this.elements.length;
-    //     for(let i = 0; i< this.elements.length; i++)
-    //     {
-    //         (<Slice>this.elements[i]).setAngle(Slice.angleLength * i);
+        Slice.angleLength = 360/this.elements.length;
+        for(let i = 0; i< this.elements.length; i++)
+        {
+            (<Slice>this.elements[i]).setAngle(Slice.angleLength * i);
 
-    //         if(valueRangeChanged)
-    //         {
-    //             this.setElementColor(this.elements[i] as Slice)
-    //         }
-    //     }
-    // }
+            if(valueRangeChanged)
+            {
+                this.setElementColor(this.elements[i] as Slice)
+            }
+        }
+    }
 }
 

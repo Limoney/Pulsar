@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DataViewLayoutOptions } from 'primeng/dataview';
-import { Environment } from '../../../../environments/environment';
 import { AlgorithmDetails, AlgorithmType } from 'src/app/interfaces/algorithm-details';
 import { AlgorithmConfigService } from 'src/app/services/algorithm-config.service';
 

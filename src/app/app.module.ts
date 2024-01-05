@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +14,7 @@ import 'prismjs/plugins/line-highlight/prism-line-highlight';
 import { ReuseStrategy } from './interfaces/reuse-strategy';
 import { AlgorithmsPageModule } from './components/algorithms-page/algorithms-page.module';
 import { HomePageModule } from './components/home-page/home-page.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
 // import 'prismjs/plugins/line-highlight/prism-line-highlight';
 
 //https://stackblitz.com/github/sulco/angular-router-children-animation?file=src%2Fapp%2Fapp.module.ts
@@ -32,6 +33,12 @@ import { HomePageModule } from './components/home-page/home-page.module';
 		DividerModule,
 		AlgorithmsPageModule,
 		HomePageModule,
+  ServiceWorkerModule.register('ngsw-worker.js', {
+    enabled: !isDevMode(),
+    // Register the ServiceWorker as soon as the application is stable
+    // or after 30 seconds (whichever comes first).
+    registrationStrategy: 'registerWhenStable:30000'
+  }),
 	],
 	providers: [
 		{

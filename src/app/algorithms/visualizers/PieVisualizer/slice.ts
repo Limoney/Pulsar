@@ -47,10 +47,11 @@ export class Slice implements Animatable
         this.value = value;
     }
 
-    update(): void {
+    public update(): void {
 
     }
-    show(): void {
+
+    public show(): void {
         this.sketch.fill(this.fillColor);
         this.sketch.noStroke();
         
@@ -88,7 +89,7 @@ export class Slice implements Animatable
         // this.sketch.text(this.value, 0,0,)
     }
 
-    async mark(color: string): Promise<void>  {
+    public async mark(color: string): Promise<void>  {
         return new Promise<void>( resolve => {
             this.prevFillColor = this.fillColor;
             this.prevStrokeColor = this.strokeColor;
@@ -105,7 +106,7 @@ export class Slice implements Animatable
         })
     }
     
-    unmark(disableAnimation?: boolean): Promise<void> {
+    public async unmark(disableAnimation?: boolean): Promise<void> {
         //TODO: not to default colors
         return new Promise<void>(resolve => {
             if(!disableAnimation)
@@ -130,7 +131,8 @@ export class Slice implements Animatable
             }
         })
     }
-    flash(color: string): void {
+
+    public flash(color: string) {
         gsap.to(this,{
             fillColor: color,
             strokeColor: color,
@@ -141,14 +143,25 @@ export class Slice implements Animatable
         })
     }
 
-    getBoundingBox(): { position: p5.Vector; size: p5.Vector } {
+    public getBoundingBox(): { position: p5.Vector; size: p5.Vector } {
         return {position: this.sketch.createVector(), size: this.sketch.createVector()};
     }
 
-    setPositionWithIndex(indexInArray: number, timeline?: gsap.core.Timeline): void {
+    public setPositionWithIndex(indexInArray: number, timeline?: gsap.core.Timeline): void {
         if(timeline)
         {
-            const tl = Slice.animatePositionInTimeline(this,Slice.angleLength * indexInArray)
+            const tl = gsap.timeline();
+            tl.to(this,{
+                distanceFromCenter: this.getRadius() * 1.1,
+                duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
+                yoyo: true,
+                repeat: 1,
+                repeatDelay: Slice.visualizerAttributes.msComputedAnimationSpeed*2
+            }).to(this,{
+                angle: Slice.angleLength * indexInArray,
+                duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
+            },`-=${Slice.visualizerAttributes.msComputedAnimationSpeed*2}`);
+            
             timeline.add(tl,"<")
         }
         else
@@ -162,7 +175,7 @@ export class Slice implements Animatable
         this.value = value;
     }
 
-    valueOf() {
+    valueOf(): number {
         return this.value;
     }
 
@@ -189,7 +202,7 @@ export class Slice implements Animatable
         return this.radius;
     }
 
-    public static animatePositionInTimeline = (element: Slice, angle: number) => {
+    private animatePositionInTimeline = (angle: number) => {
         const tl = gsap.timeline({
             // onComplete: ()=>{
             //     if(element.angle > 360)
@@ -202,16 +215,7 @@ export class Slice implements Animatable
             //     }
             // }
         });
-        tl.to(element,{
-            distanceFromCenter: element.getRadius() * 1.1,
-            duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
-            yoyo: true,
-            repeat: 1,
-            repeatDelay: Slice.visualizerAttributes.msComputedAnimationSpeed*2
-        }).to(element,{
-            angle: angle,
-            duration: Slice.visualizerAttributes.msComputedAnimationSpeed,
-        },`-=${Slice.visualizerAttributes.msComputedAnimationSpeed*2}`);
+        
         return tl;
     }
 }

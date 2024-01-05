@@ -282,6 +282,7 @@ export class ControlPanelComponent {
 		{
             this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 			const nextAlgorithm: AlgorithmDetails = this.algorithmConfig.algorithms.list[this.algorithmIndex-1];
+			this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.QUIT));
 			this.router.navigate([this.algorithmConfig.algorithms.urlPrefix,nextAlgorithm.linkName]);
 		}
 	}
@@ -292,6 +293,7 @@ export class ControlPanelComponent {
 		{
             this.visualizationManager.setVisualizationState(VisualizationState.IDLE);
 			const nextAlgorithm: AlgorithmDetails = this.algorithmConfig.algorithms.list[this.algorithmIndex+1];
+			this.visualizationManager.addAction(new VisualizationContext(VisualizationAction.QUIT));
 			this.router.navigate(["/algorithms",nextAlgorithm.linkName]);
 		}
 	}

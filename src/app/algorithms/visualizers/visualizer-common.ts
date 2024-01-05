@@ -16,6 +16,7 @@ export abstract class VisualizerCommon implements Visualizer
     protected lock: SleepLock;
     public elements: Animatable[] = [];
     protected paused = false;
+    protected forceQuit: boolean = false;
     public algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>
 
     protected constructor(attributes: VisualizerAttributes, camera: Camera, algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput>)
@@ -54,11 +55,11 @@ export abstract class VisualizerCommon implements Visualizer
         this.elements = []
     }
 
-    public abstract restart(initialData: number[]): void;
+    public abstract restart(values: number[]): void;
 
     public async play(algorithmData: any)
     {
-        this.attributes.forceQuit = false;
+        this.forceQuit = false;
         return this.algorithm(this,this.elements,algorithmData);
     }
 
@@ -97,14 +98,18 @@ export abstract class VisualizerCommon implements Visualizer
         }
     }
 
-    abstract swap(leftElement: number,rightElement: number): Promise<void>;
+    public abstract swap(leftElement: number,rightElement: number): Promise<void>;
 
     public getElements(): Animatable[] {
         return this.elements;
     }
 
     public hasRequestedForceQuit(): boolean {
-        return this.attributes.forceQuit;
+        return this.forceQuit;
+    }
+
+    public quit(): void {
+        this.forceQuit = true;
     }
 
     public abstract createElement(value: number): Animatable;

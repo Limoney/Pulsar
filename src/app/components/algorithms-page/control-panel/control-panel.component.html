@@ -133,15 +133,15 @@
 </div>
 <div class="navigation">
     <button class="button is-primary is-primary-hover" [disabled]="algorithmIndex==0" (click)="prevPage()">
-        <i class="fa-solid fa-angle-left"></i>
+        <i class="pi pi-angle-left" style="font-size: 3rem"></i>
     </button>
     <button class="button is-primary is-primary-hover" [disabled]="algorithmIndex == algorithmConfig.algorithms.list.length-1" (click)="nextPage()">
-        <i class="fa-solid fa-angle-right"></i>
+        <i class="pi pi-angle-right" style="font-size: 3rem"></i>
     </button>
 <!--        <button class="button-flex is-primary is-primary-hover" [routerLink]="['/algorithms','binary-search']"> <- </button>-->
 <!--    <button class="button-flex is-primary is-primary-hover" [routerLink]="['/algorithms','linear-search']"> -></button>-->
     <button class="button is-primary is-primary-hover" (click)="home()">
-        <i class="fa-solid fa-house"></i>
+        <i class="pi pi-home" style="font-size: 3rem"></i>
     </button>
 </div>
 

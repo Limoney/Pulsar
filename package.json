@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/schematics-cli": "^17.0.8",
     "@angular/animations": "^16.1.0",
     "@angular/common": "^16.1.0",
     "@angular/compiler": "^16.1.0",
@@ -17,7 +18,9 @@
     "@angular/forms": "^16.1.0",
     "@angular/platform-browser": "^16.1.0",
     "@angular/platform-browser-dynamic": "^16.1.0",
+    "@angular/pwa": "^17.0.8",
     "@angular/router": "^16.1.0",
+    "@angular/service-worker": "^16.1.0",
     "@types/gsap": "^3.0.0",
     "@types/hammerjs": "^2.0.41",
     "gsap": "^3.12.2",

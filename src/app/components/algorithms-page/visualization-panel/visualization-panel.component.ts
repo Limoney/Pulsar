@@ -185,7 +185,11 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 			this.camera.zoom(direction);
 		})
 
-		let hammer = new Hammer(this.canvasRef.canvas);
+		let hammer = new Hammer.Manager(this.canvasRef.canvas,{
+			recognizers:[
+				[Hammer.Pan,{ direction: Hammer.DIRECTION_ALL}],
+			]
+		});
 
 		hammer.on('panstart', (event: any) => {
 			this.camera.onMoveStart(event.center.x,event.center.y)
@@ -198,6 +202,10 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 		hammer.on('panmove', (event: any) => {
 			this.camera.onMove(event.center.x,event.center.y);
 		});
+
+		// hammer.on('swipe', (event: any) => {
+		// 	this.camera.onMove(event.center.x,event.center.y);
+		// });
 	}
 
 	private drawCanvas()
@@ -256,6 +264,9 @@ export class VisualizationPanelComponent implements OnInit, AfterViewInit, OnDes
 			case VisualizationAction.SORT:
 				this.visualizer.sort();
                 this.visualizationData.sort( (a,b) => a-b);
+				break
+			case VisualizationAction.QUIT:
+				this.visualizer.quit();
 				break
 			case VisualizationAction.REROLL:
 				this.visualizationData = this.algorithmDetails.dataOrderType == AlgorithmDataOrderType.Sorted ?

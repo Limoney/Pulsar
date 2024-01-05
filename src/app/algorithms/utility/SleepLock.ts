@@ -28,14 +28,14 @@ export class SleepLock
             if (getLock().isLocked) 
             {
                 const checkLock = () => {
-                if (!getLock().isLocked) 
-                {
-                    resolve();
-                } 
-                else 
-                {
-                    window.setTimeout(checkLock, 100); 
-                }
+                    if (!getLock().isLocked) 
+                    {
+                        resolve();
+                    } 
+                    else 
+                    {
+                        window.setTimeout(checkLock, 100); 
+                    }
                 };
                 checkLock();
             } 

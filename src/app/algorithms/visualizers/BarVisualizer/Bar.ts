@@ -27,12 +27,12 @@ export class Bar implements Animatable
         this.strokeColor = Bar.defaultStrokeColor;
     }
 
-    update()
+    public update()
     {
         //this.position.y = this.sketch.height;
     }
 
-    show()
+    public show()
     {
         this.sketch.fill(this.fillColor);
         this.sketch.stroke(this.strokeColor);
@@ -46,7 +46,7 @@ export class Bar implements Animatable
         }
     }
 
-    async mark(color: string)
+    public async mark(color: string)
     {
         return new Promise<void>(resolve => {
             gsap.to(this,{
@@ -61,7 +61,7 @@ export class Bar implements Animatable
         })
     }
 
-    async unmark(disableAnimation?: boolean)
+    public async unmark(disableAnimation?: boolean)
     {
         return new Promise<void>(resolve => {
             if(!disableAnimation)
@@ -85,7 +85,7 @@ export class Bar implements Animatable
         })
     }
 
-    flash(color:string )
+    public flash(color:string )
     {
         gsap.to(this,{
             fillColor: color,
@@ -97,7 +97,7 @@ export class Bar implements Animatable
         })
     }
 
-    valueOf()
+    public valueOf()
     {
         return this.value;
     }
@@ -129,14 +129,14 @@ export class Bar implements Animatable
     //         return 0;
     // }
 
-    getBoundingBox(): { position: p5.Vector; size: p5.Vector } {
+    public getBoundingBox(): { position: p5.Vector; size: p5.Vector } {
         let position = this.position.copy();
         position.x += Bar.width/2;
         position.y -= this.value/2;
         return {position: position, size: this.sketch.createVector(Bar.width,this.value)};
     }
 
-    setValue(value: number): void {
+    public setValue(value: number): void {
         this.value = value;
     }
 

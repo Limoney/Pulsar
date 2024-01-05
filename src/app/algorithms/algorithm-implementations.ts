@@ -24,21 +24,11 @@ export class AlgorithmImplementations
 
     private markColorLight = this.themeService.getColor("mark-light");
 
-    private markColorDark = this.themeService.getColor("mark-dark");
-
-    static instance: AlgorithmImplementations;
+    private markColorDark = this.themeService.getColor("mark-dark");;
 
     constructor(private prismService: PrismService)
     {
-        if(!AlgorithmImplementations.instance)
-        {
-            AlgorithmImplementations.instance = this;
-        }
-    }
-
-    static getInstance() 
-    {
-        return this.instance;
+       
     }
 
     public readonly binarySearchSource = `
@@ -299,7 +289,7 @@ export class AlgorithmImplementations
         } while(remainingElements > 1)
     }
     `
-    public async bubbleSort(visualizer: Visualizer, array: any[])
+    public async bubbleSort(visualizer: Visualizer, array: Animatable[])
     {
         this.prismService.highlightLines("6-17");
         const timer = new Timer();
@@ -321,7 +311,7 @@ export class AlgorithmImplementations
                 ])
 
                 await SleepLock.sleep( () => visualizer.getLock() );
-                if(array[i].value > array[i + 1].value)
+                if(array[i].valueOf() > array[i + 1].valueOf())
                 {
                     await visualizer.swap(i,i+1)
                 }
@@ -396,7 +386,7 @@ export class AlgorithmImplementations
     }
     `
 
-    public async mergeSortWrapper(visualizer: Visualizer, array: any[])
+    public async mergeSortWrapper(visualizer: Visualizer, array: Animatable[])
     {
         const timer = new Timer();
         const output = await this.mergeSort(visualizer,timer,array,0);
@@ -405,7 +395,7 @@ export class AlgorithmImplementations
                                                "done");
     }
 
-    private async mergeSort(visualizer: Visualizer, timer: Timer, array: any[], elementsBefore :number): Promise<any>
+    private async mergeSort(visualizer: Visualizer, timer: Timer, array: Animatable[], elementsBefore :number): Promise<any>
     {
         if(visualizer.hasRequestedForceQuit())
         {
@@ -465,7 +455,11 @@ export class AlgorithmImplementations
         return merged;
     }
 
-    private async merge(visualizer: Visualizer, timer: Timer, left: any[], right: any[], leftOffset :number): Promise<AlgorithmOutput | Animatable[] | void>
+    private async merge(visualizer: Visualizer, 
+                        timer: Timer, 
+                        left: Animatable[], 
+                        right: Animatable[], 
+                        leftOffset :number): Promise<AlgorithmOutput | Animatable[] | void>
     {
         if(visualizer.hasRequestedForceQuit())
         {
@@ -562,7 +556,7 @@ export class AlgorithmImplementations
         }
     }
     `
-    public async insertionSort(visualizer: Visualizer, array: any[])
+    public async insertionSort(visualizer: Visualizer, array: Animatable[])
     {
         this.prismService.highlightLines("5-15");
         const timer = new Timer();
@@ -638,7 +632,7 @@ export class AlgorithmImplementations
     }
     `;
 
-    public async selectionSort(visualizer: Visualizer, array: any[])
+    public async selectionSort(visualizer: Visualizer, array: Animatable[])
     {
         const timer = new Timer();
         for(let i=0; i<array.length-1; i++)
@@ -737,7 +731,7 @@ export class AlgorithmImplementations
     }
     `;
 
-    public async quickSortWrapper(visualizer: Visualizer, array: any[])
+    public async quickSortWrapper(visualizer: Visualizer, array: Animatable[])
     {
         this.prismService.highlightLines("4-9");
         const timer = new Timer();
@@ -752,7 +746,7 @@ export class AlgorithmImplementations
                                                "done");
     }
 
-    private async quickSort(visualizer: Visualizer, timer: Timer, array: any[], startIndex: number, endIndex: number): Promise<AlgorithmOutput | void>
+    private async quickSort(visualizer: Visualizer, timer: Timer, array: Animatable[], startIndex: number, endIndex: number): Promise<AlgorithmOutput | void>
     {
         if(visualizer.hasRequestedForceQuit())
         {
@@ -793,7 +787,7 @@ export class AlgorithmImplementations
         }
     }
 
-    private async partitionHoare(visualizer: Visualizer, timer: Timer, array: any[], startIndex: number, endIndex: number)
+    private async partitionHoare(visualizer: Visualizer, timer: Timer, array: Animatable[], startIndex: number, endIndex: number)
     {
         this.prismService.highlightLines("5,18-34");
         const pivot = array[Math.floor((endIndex - startIndex) / 2) + startIndex];

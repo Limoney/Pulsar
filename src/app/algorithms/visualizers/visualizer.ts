@@ -12,15 +12,15 @@ export interface Visualizer
 
     pop(): void;
 
-    insert(element: Animatable,index: number): void;
+    insert(element: Animatable, index: number): void;
 
     remove(index: number): void;
 
     clear(): void;
 
-    restart(initialData: number[]): void;
+    restart(values: number[]): void;
 
-    play(algorithm: any): Promise<AlgorithmOutput>;
+    play(algorithm: (...args: any[]) => AlgorithmOutput | Promise<AlgorithmOutput> ): Promise<AlgorithmOutput>;
 
     nextStep(): void;
 
@@ -30,7 +30,7 @@ export interface Visualizer
 
     setSpeed(speedPercent: number): void;
 
-    setData(initialData: number[]): void;
+    setData(values: number[]): void;
 
     getElements(): Animatable[];
 
@@ -45,6 +45,8 @@ export interface Visualizer
     swap(leftIndex: number, rightIndex: number): Promise<void>
     
     createElement(value: number): Animatable;
+
+    quit(): void;
 }
 
 

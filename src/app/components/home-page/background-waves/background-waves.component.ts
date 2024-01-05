@@ -10,8 +10,10 @@ export class BackgroundWavesComponent implements AfterViewInit {
 
   @ViewChild("wave1")
   protected wave1!: ElementRef;
+  
   @ViewChild("wave2")
   protected wave2!: ElementRef;
+
   @ViewChild("wave3")
   protected wave3!: ElementRef;
 
