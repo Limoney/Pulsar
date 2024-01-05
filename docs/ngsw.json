@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1704469334091,
+  "timestamp": 1704470488206,
   "index": "/Pulsar/index.html",
   "assetGroups": [
     {
@@ -52,6 +52,7 @@
         "/Pulsar/assets/icons/icon-144x144.png",
         "/Pulsar/assets/icons/icon-152x152.png",
         "/Pulsar/assets/icons/icon-192x192.png",
+        "/Pulsar/assets/icons/icon-384x384.png",
         "/Pulsar/assets/icons/icon-512x512.png",
         "/Pulsar/assets/icons/icon-72x72.png",
         "/Pulsar/assets/icons/icon-96x96.png",
@@ -101,6 +102,7 @@
     "/Pulsar/assets/icons/icon-144x144.png": "f72c665caf8ed3ac69a231168b301462ac8e6640",
     "/Pulsar/assets/icons/icon-152x152.png": "901412f000805d91391817c3f9d4b7885fecd3f0",
     "/Pulsar/assets/icons/icon-192x192.png": "5da0b9ae97902c04732e72ef3cd4efb131319cf7",
+    "/Pulsar/assets/icons/icon-384x384.png": "efcf647ac0d9cad537aebb039230b149b2a4f5e0",
     "/Pulsar/assets/icons/icon-512x512.png": "ccbe27ed84e763a875a216b125c96fe9152feffd",
     "/Pulsar/assets/icons/icon-72x72.png": "a54ad3e71c5a2f24d86fe42c2af5a713b9086a6c",
     "/Pulsar/assets/icons/icon-96x96.png": "b7c32371eb4a41709605b7249436b7006b220fac",
